@@ -1,5 +1,5 @@
 # Embedded_Arch_IC_log
-embedded-ai-arch-log/
+Embedded_Arch_IC_log
 ├── README.md
 └── Note
     ├──Computer Organization├── Computer Organization and Design RISC-V Edition
