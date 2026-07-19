@@ -1,5 +1,5 @@
-# Embedded_Arch_IC_log
-Embedded_Arch_IC_log
+# Embedded_Arch_IC_Learning
+Embedded_Arch_IC_Learning
 ├── README.md
 └── Note
     ├──Computer Organization├── Computer Organization and Design RISC-V Edition
