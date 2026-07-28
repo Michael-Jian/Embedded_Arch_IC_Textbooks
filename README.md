@@ -14,5 +14,7 @@ Embedded_Arch_IC_Textbooks
     |                       |                                            ├── Ch1-9 Benchmark 
     |                       |                                            └── Ch1-10 Fallacies and Pitfalls 
     |                       └── Ch3 Arithmetic for Computers ┌── Ch3-1 Introduction 
-                                                             └── Ch3-2 Addition and Subtraction   
-    └── Deep Learning ── NVIDIA Learning Deep Learning
+    |                                                        └── Ch3-2 Addition and Subtraction   
+    └── Deep Learning ┌── NVIDIA Learning Deep Learning 
+                      └── Ch1 The Rosenblatt Perception┌── Ch1-1 A Two-Input Perceptron                                       
+                                                       └── Ch1-2 The Perceptron Learning Algorithm 
