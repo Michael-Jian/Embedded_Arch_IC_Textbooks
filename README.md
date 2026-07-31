@@ -15,8 +15,14 @@ Embedded_Arch_IC_Textbooks
     |                                                                     └── Ch1-10 Fallacies and Pitfalls 
     ├── Deep Learning┌── NVIDIA Learning Deep Learning 
     |                └── Ch1 The Rosenblatt Perception┌── Ch1-1 A Two-Input Perceptron                    
-    |                                                 └── Ch1-2 The Perceptron Learning Algorithm
+    |                                                 ├── Ch1-2 The Perceptron Learning Algorithm
+    |                                                 ├── Ch1-3 Limitations of the Perceptron
+    |                                                 ├── Ch1-4 Combining Multiple Perceptrons
+    |                                                 ├── Ch1-5 Perceptrons with Linear Algebra
+    |                                                 ├── Ch1-6 Geo Interpretation of Perceptron
+    |                                                 └── Ch1-7 Understanding the Bias Term
     ├── APL Design┌── C++ High Performance Second Edition 
-    |             └── Ch2 Essential C++ Techniques ── Ch2-1 Automatic type deduction with the auto keyword                    
+    |             └── Ch2 Essential C++ Techniques ── Ch2-1 Automatic type deduction with auto keyword
+    |                  
     └── HDL Design┌── FPGA Prototyping by Verilog Examples
                   └── Ch1 Gate-level combinational circuit ── Ch1-1 Introduction                              
