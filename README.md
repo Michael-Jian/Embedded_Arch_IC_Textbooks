@@ -32,13 +32,13 @@ Embedded_Arch_IC_Textbooks
     |                |                              ├── Ch2-7 Revisiting Different Types of Perceptron Plots
     |                |                              └── Ch2-8 Using a Perceptron to Identify Patterns
     |                └── Ch03 Sigmoid Neuorns and Backpropagation┌── Appediend A Linear Regression and Classifiers
-    |                                                           ├── Ch3-1 Modified Neurons for Multilevel Networks            
-    |                                                           ├── Ch3-2 Use Activation Functions
-    |                                                           ├── Ch3-3 Function Composition and Chain Rule
-    |                                                           ├── Ch3-4 Backpropagation to Compute Gradient
-    |                                                           ├── Ch3-5 Backpropagation with Multiple Neurons 
-    |                                                           ├── Ch3-6 Learning the XOR Function
-    |                                                           └── Ch3-7 Network Architectures
+    |                                                            ├── Ch3-1 Modified Neurons for Multilevel Networks            
+    |                                                            ├── Ch3-2 Use Activation Functions
+    |                                                            ├── Ch3-3 Function Composition and Chain Rule
+    |                                                            ├── Ch3-4 Backpropagation to Compute Gradient
+    |                                                            ├── Ch3-5 Backpropagation with Multiple Neurons 
+    |                                                            ├── Ch3-6 Learning the XOR Function
+    |                                                            └── Ch3-7 Network Architectures
     ├── APL Design┌── C++ High Performance Second Edition 
     |             └── Ch2 Essential C++ Techniques ── Ch2-1 Automatic type deduction with auto keyword
     |                  
