@@ -31,7 +31,7 @@ Embedded_Arch_IC_Textbooks
     |                |                              ├── Ch2-6 Geometric Description of Perceptron Learning Algorithm
     |                |                              ├── Ch2-7 Revisiting Different Types of Perceptron Plots
     |                |                              └── Ch2-8 Using a Perceptron to Identify Patterns
-    |                └── Ch3 Sigmoid Neuorns and Backpropagation┌── Appediend A Linear Regression and Classifiers
+    |                └── Ch03 Sigmoid Neuorns and Backpropagation┌── Appediend A Linear Regression and Classifiers
     |                                                           ├── Ch3-1 Modified Neurons for Multilevel Networks            
     |                                                           ├── Ch3-2 Use Activation Functions
     |                                                           ├── Ch3-3 Function Composition and Chain Rule
