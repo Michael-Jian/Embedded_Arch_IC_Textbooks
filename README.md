@@ -63,7 +63,7 @@ Embedded_Arch_IC_Textbooks
     |                |                                         ├── Ch8-8 Mistakes Made by CNNs
     |                |                                         ├── Ch8-9 Reducing Parameters with Depthwise Separable Convolutions
     |                |                                         ├── Ch8-10 Striking the Right Network Design Balance with EfficientNet
-    |                |                                         └── Appendix B
+    |                |                                         └── Appendix B Objection Dectection and Segmentation
     |                ├── Ch09 Predicting Time Sequences with RNN┌── Ch9-1 Limitations of Feedforward Networks
     |                |                                          ├── Ch9-2 Recurrent Neural Networks
     |                |                                          ├── Ch9-3 Mathematical Representation of a Recurrent Layer
@@ -78,7 +78,7 @@ Embedded_Arch_IC_Textbooks
     |                |                              ├── Ch10-4 Creating a Network of LSTM Cells
     |                |                              ├── Ch10-5 Alternative View of LSTM
     |                |                              ├── Ch10-6 Highway Networks and Skip Connections
-    |                |                              └── Appendix H
+    |                |                              └── Appendix H Gated Recurrent Units
     |                ├── Ch11 Text Autocompletion with LSTM and Beam Search┌── Ch11-1 Encoding Text
     |                |                                                     ├── Ch11-2 Longer-Term Prediction and Autoregressive Models
     |                |                                                     ├── Ch11-3 Beam Search
@@ -109,7 +109,7 @@ Embedded_Arch_IC_Textbooks
     |                |                                 ├── Ch15-4 Self-Attention
     |                |                                 ├── Ch15-5 Multi-head Attention
     |                |                                 ├── Ch15-6 The Transformer
-    |                |                                 └── Appendix D
+    |                |                                 └── Appendix D GPT, BERT,and RoBERTa
     |                ├── Ch16 One-to Many Network for Image Captioning┌── Ch16-1 Extending the Image Captioning Network with Attention
     |                |                                                └── Ch16-2 Attention-Based Image Captioning
     |                └── Ch17 Medley of Additional Topics┌── Ch17-1 Autoencoders
