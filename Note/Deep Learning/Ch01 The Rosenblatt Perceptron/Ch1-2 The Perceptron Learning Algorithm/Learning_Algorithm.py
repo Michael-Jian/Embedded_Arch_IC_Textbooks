@@ -29,8 +29,8 @@ def show_learning( w ) :
 # define learning rate
 learning_rate = 0.1
 
-random.seed(7) #  '7' is defined as a specific sequence of index list made by random.shuffle().
-index_list = [0, 1, 2, 3] # the specific sequence of index list for training examples.
+random.seed(7) # set up a random seed '7' to start this shuffle command.
+index_list = [0, 1, 2, 3] # the inital sequence of index list for training examples.
 
 # define training examples.
 # in the index list :
@@ -51,7 +51,8 @@ show_learning(w)
 all_correct = False
 while not all_correct :
     all_correct = True
-    random.shuffle(index_list) # output the specific sequence of index list for training examples.
+     # output the random sequence of index list for training examples to finish this shuffle command.
+    random.shuffle(index_list)
     for i in index_list :
         x = x_train[ i ] 
         y = y_train[ i ] # = ground truth (real output)
