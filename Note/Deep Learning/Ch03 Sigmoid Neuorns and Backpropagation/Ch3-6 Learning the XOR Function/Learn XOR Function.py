@@ -30,7 +30,7 @@ predicted_output_p_y_of_perceptrons = [ 0 , 0 , 0 ]
 error_term_of_perceptrons = [ 0 , 0 , 0 ]
 
 
-# Forward Pass and : 
+# Forward Pass : 
 def forward_pass( one_of_inputs_x ) :
     # tell Python that the "predicted_output_p_y_of_perceptrons" I use later is the old array in global scope, 
     # not the new one I create in this local scope.
