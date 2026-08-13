@@ -1,10 +1,10 @@
 # The perceptron with these specific weights implements a NAND gate
 
-def computational_unit( w, x ) : # define computational_unit function.
+def computational_unit( w , x ) : # define computational_unit function.
     z = 0.0
-    # range( start, stop )
-    # range(2, len(w) ) : interval of index = [2, len(w)-1 ]
-    # range( len(w) ) :  interval of index = [0, len(w)-1 ]
+    # range( start, stop ) : interval = [ start, stop - 1 ]
+    # range( stop ) : interval = [ 0, stop - 1 ]
+    # len( x ) : length of variable x
     for i in range( len( w ) ) : # compute sum of weighted inputs.
         z += x[ i ] * w[ i ]  
     if z < 0 :  # compute sign function.
@@ -23,9 +23,9 @@ while True :
         # "1 -1".split() will become "1", "-1"。
         x1 = float( x1_str )
         x2 = float( x2_str )
-        x = [ 1.0, x1, x2 ] # X0 = 1.0 ( bias input )
+        x = [ 1.0 , x1 , x2 ] # X0 = 1.0 ( bias input )
         
-        w = [ 0.9, -0.6, -0.5 ] # w0 = 0.9 ,w1 = -0.6 ,w2 = -0.5
+        w = [ 0.9 , -0.6 , -0.5 ] # w0 = 0.9 ,w1 = -0.6 ,w2 = -0.5
         
         w0_x0 = w[ 0 ] * x[ 0 ]
         w1_x1 = w[ 1 ] * x[ 1 ]
@@ -38,9 +38,9 @@ while True :
         y_bool  = "False" if y == -1 else "True" 
         
         print( "\nResult : " )
-        print( f"X1 : {x1} {x1_bool}" )
-        print( f"X2 : {x2} {x2_bool}" )
-        print( f"Y : {y} {y_bool}\n" )
+        print( f"X1 : { x1 } { x1_bool }" )
+        print( f"X2 : { x2 } { x2_bool }" )
+        print( f"Y : { y } { y_bool }\n" )
         # f : f-string（Formatted String Literal）transfer { string } in the whole string into variable expression, 
         # Python will automatically calculate the value of the variable and insert it into the string.
         # print( f"Y : {y} {y_bool}\n" ) is equal to print("Y : " + str(y) + " " + str(y_bool) + "\n")

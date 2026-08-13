@@ -1,5 +1,5 @@
 # Perceptron structure :
-def computational_unit( w, x ) :
+def computational_unit( w , x ) :
     z = 0.0
     for i in range( len( w ) ) :
         z += x[ i ] * w[ i ] 
@@ -24,13 +24,13 @@ def computational_unit( w, x ) :
 # Initialization code :
 import random
 def show_learning( w ) :
-    print('w0 =', '%5.2f' % w[ 0 ], ', w1 =', '%5.2f' % w[ 1 ], ', w2 =', '%5.2f' % w[ 2 ] )
+    print('w0 = ' , '%5.2f' % w[ 0 ] , ' , w1 = ' , '%5.2f' % w[ 1 ] , ' , w2 = ', '%5.2f' % w[ 2 ] )
 
 # define learning rate
 learning_rate = 0.1
 
 random.seed(7) # set up a random seed '7' to start this shuffle command.
-index_list = [0, 1, 2, 3] # the inital sequence of index list for training examples.
+index_list = [ 0 , 1 , 2 , 3 ] # the inital sequence of index list for training examples.
 
 # define training examples.
 # in the index list :
@@ -38,13 +38,13 @@ index_list = [0, 1, 2, 3] # the inital sequence of index list for training examp
 # [ 1 ] : (1.0, 1.0, 1.0) -> 1.0
 # [ 2 ] : (1.0, -1.0, -1.0) -> 1.0
 # [ 3 ] : (1.0, -1.0, 1.0) -> -1.0 
-x_train = [(1.0, 1.0, -1.0), (1.0, 1.0, 1.0), (1.0, -1.0, -1.0), (1.0, -1.0, 1.0) ] 
-y_train = [1.0, 1.0, 1.0, -1.0] #  = ground truth (real output)
+x_train = [ ( 1.0 , 1.0 , -1.0 ) , ( 1.0 , 1.0 , 1.0 ) , ( 1.0 , -1.0 , -1.0 ) , ( 1.0 , -1.0 , 1.0 ) ] 
+y_train = [ 1.0 , 1.0 , 1.0 , -1.0 ] #  = ground truth (real output)
 
 # define inital weights.
-w = [ 0.2, -0.6, 0.25 ] # Initialize to some "random" numbers
+w = [ 0.2 , -0.6 , 0.25 ] # Initialize to some "random" numbers
 
-show_learning(w)
+show_learning( w )
 
 
 # Training loop :
@@ -52,17 +52,17 @@ all_correct = False
 while not all_correct :
     all_correct = True
      # output the random sequence of index list for training examples to finish this shuffle command.
-    random.shuffle(index_list)
+    random.shuffle( index_list )
     for i in index_list :
         x = x_train[ i ] 
         y = y_train[ i ] # = ground truth (real output)
-        p_y = computational_unit( w, x ) # = predicted output
+        p_y = computational_unit( w , x ) # = predicted output
         if p_y != y : # adjust weights when predicted output != real output
             for j in range( len( w ) ) :
                 # if "( p_y <0 ) != ( y = +1 ) " = " ( p_y = -1 ) != ( y = +1 ) "
                 # ,then " add each wj by ηxj " = " w[j] += ( y * η * x[j] ), y = +1"
                 # if " ( p_y >0 ) != ( y = -1 )" = " ( p_y = +1 ) != ( y = -1 ) "
                 # ,then " subtract each wj by ηxj " = " w[j] += ( y * η * x[j] ), y = -1"           
-                w[ j ] += (y * learning_rate * x[j])
+                w[ j ] += ( y * learning_rate * x[ j ] )
             all_correct = False
-            show_learning(w) # show adjusted weights
+            show_learning( w ) # show adjusted weights
