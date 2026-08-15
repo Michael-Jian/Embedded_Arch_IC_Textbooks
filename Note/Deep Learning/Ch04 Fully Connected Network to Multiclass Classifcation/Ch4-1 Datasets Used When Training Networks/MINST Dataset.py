@@ -13,22 +13,25 @@ train_labels = idx2numpy.convert_from_file( TRAIN_LABEL_FILENAME )
 test_images = idx2numpy.convert_from_file( TEST_IMAGE_FILENAME )
 test_labels = idx2numpy.convert_from_file( TEST_LABEL_FILENAME )
 
-# Print dimensions : 
+# Print number and dimension : 
 # filename.shape : introduce the number of data and dimension of data in this file.
-print( 'dimensions of training images : ' , train_images.shape ) # 6000 images and 28 * 28 pixel of each.
-print( 'dimensions of training labels : ' , train_labels.shape ) # 6000 answers and no pixel of each.
-print( 'dimensions of test images : ' , test_images.shape ) # 10000 images and 28 * 28 pixel of each.
-print( 'dimensions of test labels : ' , test_labels.shape ) # 10000 answers and no pixel of each.
+print( 'number and dimension of training images : ' , train_images.shape ) # 6000 images and 28 * 28 pixel of each.
+print( 'number and dimension of training labels : ' , train_labels.shape ) # 6000 answers and no pixel of each.
+print( 'number and dimension of test images : ' , test_images.shape ) # 10000 images and 28 * 28 pixel of each.
+print( 'number and dimension of test labels : ' , test_labels.shape ) # 10000 answers and no pixel of each.
 
 # Print one training example : 
 print( 'first training labels : ' , train_labels[ 0 ] )
 print( 'first training images : ' )
 # training images in train_images is not traditonal format(.png/.jpeg ) but binary format (.idx-ubyte ),
 #so we use specific method to show it below.
-for i in train_images[ 0 ] :
-    for j in i :
-        if j > 0 :
-            print( '*', end = '' )
+for row in train_images[ 0 ] :
+    for num in row :
+        if num == 0 : 
+            # print( 'x' , end = 'y' ) : after printing x , print "y" consecutively and don't change to next row.
+            print( '0', end = '' ) 
         else :
+            # print( 'x' , end = 'y' ) : after printing x , print "y" consecutively and don't change to next row.
             print( ' ', end = '' )
+    # print( 'x' ) : after printing x , it will change to next row automatically.
     print( '' )
