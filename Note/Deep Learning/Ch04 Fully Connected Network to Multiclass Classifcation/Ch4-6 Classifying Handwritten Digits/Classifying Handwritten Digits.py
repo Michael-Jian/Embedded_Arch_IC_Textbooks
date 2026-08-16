@@ -164,7 +164,10 @@ def plot_learning() :
     # plt.ylabel( ' ' ) : descriptive label for the vertical y-axis.
     plt.ylabel('error')
     plt.legend() # show legend box ( symbol explaination table ) on the screen.
-    plt.show() # show complete chart on the screen.
+    # plt.show() # show complete chart on the screen.
+    # save the whole figure into .png format
+    plt.savefig('learning_curve.png') 
+    print("learning_curve.png has done")
     
     
 # Forward pass :    
