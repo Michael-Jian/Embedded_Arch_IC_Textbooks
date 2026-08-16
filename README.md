@@ -3,14 +3,18 @@ Embedded_Arch_IC_Textbooks
 ├── README.md
 └── Note
     ├── Deep Learning┌── NVIDIA Learning Deep Learning 
+    |                ├── Appendix B Objection Dectection and Segmentation
+    |                ├── Appendix D GPT, BERT,and RoBERTa
+    |                ├── Appendix F Matrix of Digit Classification Network
+    |                ├── Appendix H Gated Recurrent Units
+    |                ├── Appendix I Setting Development Invironment
     |                ├── Ch1 The Rosenblatt Perception┌── Ch1-1 A Two-Input Perceptron   
     |                |                                ├── Ch1-2 The Perceptron Learning Algorithm                
     |                |                                ├── Ch1-3 Limitations of the Perceptron
     |                |                                ├── Ch1-4 Combining Multiple Perceptrons
     |                |                                ├── Ch1-5 Perceptrons with Linear Algebra
     |                |                                ├── Ch1-6 Geo Interpretation of Perceptron
-    |                |                                ├── Ch1-7 Understanding the Bias Term
-    |                |                                └── Appediend I Setting Development Invironment
+    |                |                                └── Ch1-7 Understanding the Bias Term  
     |                ├── Ch02 Gradient Base Learning┌── Ch2-1 Explanation of Perceptron Learning Algorithm  
     |                |                              ├── Ch2-2 Derivatives and Optimization Problems
     |                |                              ├── Ch2-3 Solving Problem with Gradient Descent
@@ -32,8 +36,7 @@ Embedded_Arch_IC_Textbooks
     |                |                                                           ├── Ch4-4 Network for Digit Classification
     |                |                                                           ├── Ch4-5 Loss Function for Multiclass Classification 
     |                |                                                           ├── Ch4-6 Classifying Handwritten Digits
-    |                |                                                           ├── Ch4-7 Mini-Batch Gradient Descent
-    |                |                                                           └── Appdendix F Matrix of Digit Classification Network
+    |                |                                                           └── Ch4-7 Mini-Batch Gradient Descent
     |                ├── Ch05 Frameworks and Network Tweaks┌── Ch5-1 Moving to a DL Framework  
     |                |                                     ├── Ch5-2 Saturated Neurons and Vanishing Gradients
     |                |                                     ├── Ch5-3 Initialization and Normalization to Avoid Saturated Neurons
@@ -62,8 +65,7 @@ Embedded_Arch_IC_Textbooks
     |                |                                         ├── Ch8-7 Data Augmentation as a Regularization Technique
     |                |                                         ├── Ch8-8 Mistakes Made by CNNs
     |                |                                         ├── Ch8-9 Reducing Parameters with Depthwise Separable Convolutions
-    |                |                                         ├── Ch8-10 Striking the Right Network Design Balance with EfficientNet
-    |                |                                         └── Appendix B Objection Dectection and Segmentation
+    |                |                                         └── Ch8-10 Striking the Right Network Design Balance with EfficientNet
     |                ├── Ch09 Predicting Time Sequences with RNN┌── Ch9-1 Limitations of Feedforward Networks
     |                |                                          ├── Ch9-2 Recurrent Neural Networks
     |                |                                          ├── Ch9-3 Mathematical Representation of a Recurrent Layer
@@ -77,8 +79,7 @@ Embedded_Arch_IC_Textbooks
     |                |                              ├── Ch10-3 LSTM Activation Functions
     |                |                              ├── Ch10-4 Creating a Network of LSTM Cells
     |                |                              ├── Ch10-5 Alternative View of LSTM
-    |                |                              ├── Ch10-6 Highway Networks and Skip Connections
-    |                |                              └── Appendix H Gated Recurrent Units
+    |                |                              └── Ch10-6 Highway Networks and Skip Connections
     |                ├── Ch11 Text Autocompletion with LSTM and Beam Search┌── Ch11-1 Encoding Text
     |                |                                                     ├── Ch11-2 Longer-Term Prediction and Autoregressive Models
     |                |                                                     ├── Ch11-3 Beam Search
@@ -108,8 +109,7 @@ Embedded_Arch_IC_Textbooks
     |                |                                 ├── Ch15-3 Alternatives to Recurrent Networks
     |                |                                 ├── Ch15-4 Self-Attention
     |                |                                 ├── Ch15-5 Multi-head Attention
-    |                |                                 ├── Ch15-6 The Transformer
-    |                |                                 └── Appendix D GPT, BERT,and RoBERTa
+    |                |                                 └── Ch15-6 The Transformer
     |                ├── Ch16 One-to Many Network for Image Captioning┌── Ch16-1 Extending the Image Captioning Network with Attention
     |                |                                                └── Ch16-2 Attention-Based Image Captioning
     |                └── Ch17 Medley of Additional Topics┌── Ch17-1 Autoencoders
