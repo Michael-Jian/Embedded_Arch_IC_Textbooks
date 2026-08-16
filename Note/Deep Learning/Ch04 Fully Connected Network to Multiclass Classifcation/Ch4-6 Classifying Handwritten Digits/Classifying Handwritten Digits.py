@@ -28,7 +28,7 @@ def read_mnist() :
     # reformate the input data
     # filename.reshape() : transfer the dimension/tensor of the file into different dimension/tensor structure , but the original data.
     # filename.reshape( x , y , z ) = transfer the dimension/tensor of the file into 3 dimension with x in length , y in width , z in height.
-    # transfer 3D training_inputs_x (60000 , 28 , 28 ) into 2D training_inputs_x ( 6000 , 784 )
+    # transfer 3D training_inputs_x (60000 , 28 , 28 ) into 2D training_inputs_x ( 60000 , 784 )
     training_inputs_x = training_images.reshape( 60000 , 784 )
     # transfer 3D test_inputs_x ( 10000 , 28 , 28 ) into 2D training_inputs_x ( 10000 , 784 )
     test_inputs_x = test_images.reshape( 10000, 784 )
@@ -87,7 +87,7 @@ def read_mnist() :
     for i, j in enumerate( test_labels ) : 
         test_outputs_y[ i ][ j ] = 1 
     
-    return training_inputs_x , test_inputs_x , training_outputs_y , test_outputs_y 
+    return training_inputs_x, training_outputs_y, test_inputs_x, test_outputs_y 
 
 # training_inputs_x , test_inputs_x , training_outputs_y , test_outputs_y aboved are 4 local scope variables in read_mnist(),
 # so we need to create training_inputs_x, training_outputs_y, test_inputs_x, test_outputs_y belowed 
@@ -116,14 +116,14 @@ def weight_per_layer( num_of_perceptron , num_of_input_weight_per_perceptron ) :
             weights[ i ][ j ] = np.random.uniform( -0.1 , 0.1 ) 
     return weights
 
-# the hidden_layer has 25 hidden perceptrons and 784 input weight per perceptron
+# the hidden_layer has 25 hidden perceptrons and 784 input weights + 1 bias weight per perceptron
 hidden_layer_w = weight_per_layer( 25 , 784 )
 # the hidden_layer has 25 outputs for 25 hidden perceptrons.
 hidden_layer_y = np.zeros( 25 ) 
 # the hidden_layer has 25 error for 25 hidden perceptrons.
-
-# the output_layer has 10 output perceptrons and 25 input weight per perceptron
-output_layer_w = weight_per_layer( 10, 25 ) 
+hidden_layer_error = np.zeros( 25 )
+# the output_layer has 10 output perceptrons and 25 input weights + 1 bias weight per perceptron
+output_layer_w = weight_per_layer( 10 , 25 ) 
 # the output_layer has 10 outputs for 10 output perceptrons.
 output_layer_y = np.zeros( 10 ) 
 # the output_layer has 10 error for 10 output perceptrons.
@@ -168,66 +168,108 @@ def plot_learning() :
     
     
 # Forward pass :    
-def forward_pass( one_of_inputs_x ) :
+def forward_pass( one_of_inputs_x ) : 
     # tell Python that the "hidden_layer_y" , "output_layer_y" I use later is the old array in global scope, 
     # not the new one I create in this local scope.    
     global hidden_layer_y 
-    global output_layer_y 
+    global output_layer_y
     
     # computing activation function for hidden layer
-    for i, w in enumerate( hidden_layer_w ) :
-        z = np.dot(w, one_of_inputs_x) # 利用內積運算，將輸入 x 與權重 w 相乘加總，得到加權總和 z
-        hidden_layer_y[i] = np.tanh(z) # 將 z 傳入 tanh 激勵函數，並將結果儲存至隱藏層輸出陣列中
+    for i , w in enumerate( hidden_layer_w ) :                                                                 # 25 * ( 784 + 1 )
+        z = np.dot( w , one_of_inputs_x )                                                                     # ( 784 + 1 ) * ( 784 + 1 )  = 1
+        hidden_layer_y[ i ] = np.tanh( z )  # outputs of hidden layer = activation functions for hidden layer # 25 * 1
         
-    hidden_output_array = np.concatenate( # 建立要傳給輸出層的輸入陣列
-        (np.array([1.0]), hidden_layer_y)) # 在隱藏層所有輸出值的最前面，拼接一個常數 1.0 作為給輸出層的 bias
-        
-    # Activation function for output layer (輸出層的激勵函數處理)
-    for i, w in enumerate(output_layer_w): # 逐一走訪輸出層每一個神經元的權重 (w)
-        z = np.dot(w, hidden_output_array) # 將來自隱藏層的輸入與輸出層的權重進行內積，得到 z
-        output_layer_y[i] = 1.0 / (1.0 + np.exp(-z)) # 將 z 傳入 logistic sigmoid 激勵函數，儲存為最終的預測機率
+    # computing activation function for output layer
+    # np.concatenate( ( array0 , array1 , array2 , ...... , arrayn ) ) : join array0 , array1 , array2 , ...... , arrayn together into a new array.
+    # np.concatenate( ( np.array( [ 0 , 1 ] ) , np.array( [ 2 , 3 , 4 ]  ) ) = np.array( [ 0 , 1 , 2 , 3 , 4 ] )
+    inputs_of_output_perceptron = np.concatenate( ( np.array( [ 1.0 ] ) , hidden_layer_y ) )  # 1 + 25
+    for i , w in enumerate( output_layer_w ) :                                                                 # 10 * ( 25 + 1 )
+        z = np.dot( w , inputs_of_output_perceptron )                                                         # ( 25 + 1 ) * ( 25 + 1 ) = 1
+        output_layer_y[ i ] = 1.0 / ( 1.0 + np.exp( -z ) )                                                          # 10 * 1 
 
-def backward_pass( one_of_outputs_y ): # 定義反向傳播函式，輸入為單熱編碼的真實解答 one_of_outputs_y
-    global hidden_layer_error # 宣告使用外部變數：隱藏層的誤差項陣列
-    global output_layer_error # 宣告使用外部變數：輸出層的誤差項陣列
+# Backward pass :    
+def backward_pass( one_of_outputs_y ) :
+    # tell Python that the "hidden_layer_error" , "output_layer_error" I use later is the old array in global scope, 
+    # not the new one I create in this local scope.  
+    global hidden_layer_error 
+    global output_layer_error
     
-    # Backpropagate error for each output neuron (計算輸出神經元的誤差)
-    # and create array of all output neuron errors.
-    for i, y in enumerate(output_layer_y): # 逐一走訪每個輸出神經元的預測值 y
-        error_prime = -(one_of_outputs_y[i] - y) # Loss derivative: 計算損失函數的導數 (即預測值 - 真實值)
-        derivative = y * (1.0 - y) # Logistic derivative: 計算 logistic sigmoid 函數的導數
-        output_layer_error[i] = error_prime * derivative # 兩者相乘，得到該輸出神經元的誤差項
+    # error of output perceptron
+    for i , y in enumerate( output_layer_y ) : 
+        overall_error = -2 * ( one_of_outputs_y[ i ] - y )
+        output_layer_error[ i ] =  overall_error * ( y * ( 1.0 - y ) ) 
         
-    # Backpropagate error for hidden neuron. (計算隱藏層神經元的誤差)
-    for i, y in enumerate(hidden_layer_y): # 逐一走訪每個隱藏層神經元的輸出 y
-        # Create array weights connecting the output of
-        # hidden neuron i to neurons in the output layer.
-        error_weights = [] # 建立空清單，用來收集「所有連接到這個隱藏神經元」的輸出層權重
-        for w in output_layer_w: # 走訪輸出層的所有神經元權重
-            error_weights.append(w[i+1]) # 取出對應的權重 (索引 i+1 是為了跳過最前面的 bias 權重)
-        error_weight_array = np.array(error_weights) # 將收集到的權重轉換成 NumPy 陣列
-        
-        derivative = 1.0 - y**2 # tanh derivative: 計算 tanh 激勵函數的導數
-        weighted_error = np.dot(error_weight_array, # 計算回傳的加權誤差總和：
-                                output_layer_error) # 將剛剛收集的權重陣列與「輸出層誤差項」做內積
-        hidden_layer_error[i] = weighted_error * derivative # 加權誤差總和乘上激勵函數導數，得到該隱藏神經元的誤差項
+    # error of hidden perceptron 
+    for i , y in enumerate( hidden_layer_y ) :
+        # create an array of weights connecting hidden neuron [ i ] and output neurons [ 0 , 1 , ...... 9 ].
+        error_weights = [] 
+        for w in output_layer_w :     # 10 * ( 25 + 1 )
+            # hidden neuron [ i ] will connect to the weight[ i + 1 ] of output neurons [ 0 , 1 , ...... 9 ] 
+            # due to bias input must connect to bias weight ( weight[ 0 ] )
+            error_weights.append( w[ i + 1 ] )
+        # transfer array "error_weights" into array "error_weight_array" which is NumPy format.
+        error_weight_array = np.array(error_weights)
 
-def adjust_weights(one_of_inputs_x): # 定義權重調整函式，輸入為原始的資料特徵 x
-    global output_layer_w # 宣告使用外部變數：輸出層的權重
-    global hidden_layer_w # 宣告使用外部變數：隱藏層的權重
+        hidden_layer_error[ i ] = np.dot( output_layer_error , error_weight_array ) * ( 1.0 - y**2 )
+
+# Weight Adjustment :   
+def adjust_weights( one_of_inputs_x ) :
+    # tell Python that the "output_layer_w" , "hidden_layer_w" I use later is the old array in global scope, 
+    # not the new one I create in this local scope. 
+    global output_layer_w 
+    global hidden_layer_w
+
+    # adjust weights of hidden layer
+    for i , error in enumerate( hidden_layer_error ) :
+        hidden_layer_w[ i ] = hidden_layer_w[ i ] + learning_rate * -( error * one_of_inputs_x ) 
     
-    # 更新隱藏層權重
-    for i, error in enumerate(hidden_layer_error): # 逐一走訪隱藏層的誤差項
-        hidden_layer_w[i] -= (one_of_inputs_x * learning_rate # 權重扣除 (輸入特徵 * 學習率 * 誤差項) 來完成梯度下降更新
-                              * error) # Update all weights
-                              
-    hidden_output_array = np.concatenate( # 再次重新拼接隱藏層的輸出，加上 1.0 作為 bias，當作輸出層更新權重時的「輸入」
-        (np.array([1.0]), hidden_layer_y))
+    # adjust weights of output layer                          
+    inputs_of_output_perceptron = np.concatenate( ( np.array( [ 1.0 ] ) , hidden_layer_y ) ) 
+    for i , error in enumerate( output_layer_error ) :
+        output_layer_w[ i ] = output_layer_w[ i ] + learning_rate * -( error * inputs_of_output_perceptron ) 
+
+
+
+# Network training loop and test loop and show progress : 
+for i in range( epoch ) : 
+    
+    # training loop
+    # output the random sequence of index list for training examples to finish this shuffle command.
+    np.random.shuffle( index_list )
+    
+    correct_training_results = 0 
+    
+    for j in index_list :
+        # np.concatenate( ( array0 , array1 , array2 , ...... , arrayn ) ) : join array0 , array1 , array2 , ...... , arrayn together into a new array.
+        # np.concatenate( ( np.array( [ 0 , 1 ] ) , np.array( [ 2 , 3 , 4 ]  ) ) = np.array( [ 0 , 1 , 2 , 3 , 4 ] )
+        one_of_training_inputs_x = np.concatenate( ( np.array( [ 1.0 ] ) , training_inputs_x[ j ] ) )
+        forward_pass( one_of_training_inputs_x ) 
         
-    # 更新輸出層權重
-    for i, error in enumerate(output_layer_error): # 逐一走訪輸出層的誤差項
-        output_layer_w[i] -= (hidden_output_array # 權重扣除 (隱藏層輸入特徵 * 學習率 * 誤差項) 來完成更新
-                              * learning_rate
-                              * error) # Update all weights  
+        # arrayname.argmax() : find out the maximun value in the array and return the index of the maximun value.
+        # predicted output p_y ? desired output y ( ground thruth )
+        if output_layer_y.argmax() == training_outputs_y[ j ].argmax() : 
+            correct_training_results += 1 
+            
+        backward_pass( training_outputs_y[ j ] ) 
+        adjust_weights( one_of_training_inputs_x )
+        
+    # test loop    
+    correct_test_results = 0 
     
-    
+    for j in range( len( test_inputs_x ) ) :
+        # np.concatenate( ( array0 , array1 , array2 , ...... , arrayn ) ) : join array0 , array1 , array2 , ...... , arrayn together into a new array.
+        # np.concatenate( ( np.array( [ 0 , 1 ] ) , np.array( [ 2 , 3 , 4 ]  ) ) = np.array( [ 0 , 1 , 2 , 3 , 4 ] )
+        one_of_test_inputs_x = np.concatenate( ( np.array( [ 1.0 ] ) , test_inputs_x[ j ] ) )
+        forward_pass( one_of_test_inputs_x )
+        
+        # arrayname.argmax() : find out the maximun value in the array and return the index of the maximun value.
+        # predicted output p_y ? desired output y ( ground thruth )
+        if output_layer_y.argmax() == test_outputs_y[ j ].argmax() :
+            correct_test_results += 1 
+            
+    # show progress
+    show_learning( i , 
+                  correct_training_results / len( training_outputs_y ) , # accuracy of training error = correct results / total training results
+                  correct_test_results / len( test_outputs_y ) )  # accuracy of test error = correct results / total test results
+
+plot_learning() 
