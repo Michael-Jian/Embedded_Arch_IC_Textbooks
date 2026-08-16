@@ -16,11 +16,12 @@ test_images = idx2numpy.convert_from_file( TEST_IMAGE_FILENAME )
 test_labels = idx2numpy.convert_from_file( TEST_LABEL_FILENAME )
 
 # Print number and dimension : 
-# filename.shape : introduce the number of data and dimension of data in this file.
-print( 'number and dimension of training images : ' , training_images.shape ) # 6000 images and 28 * 28 pixel of each.
-print( 'number and dimension of training labels : ' , training_labels.shape ) # 6000 answers and no pixel of each.
+# filename.shape : introduce the dimension/tensor of the file.
+# if the file is a 3 dimensions structure, then filename.shape = ( length , width , height )
+print( 'number and dimension of training images : ' , training_images.shape ) # 60000 images and 28 * 28 pixel of each.
+print( 'number and dimension of training labels : ' , training_labels.shape ) # 60000 one dimesion answers.
 print( 'number and dimension of test images : ' , test_images.shape ) # 10000 images and 28 * 28 pixel of each.
-print( 'number and dimension of test labels : ' , test_labels.shape ) # 10000 answers and no pixel of each.
+print( 'number and dimension of test labels : ' , test_labels.shape ) # 10000 one dimesion answers.
 
 # Print one training example : 
 print( 'first training labels : ' , training_labels[ 0 ] )

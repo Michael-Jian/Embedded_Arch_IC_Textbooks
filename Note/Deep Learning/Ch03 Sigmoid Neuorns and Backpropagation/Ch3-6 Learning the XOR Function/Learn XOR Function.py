@@ -13,14 +13,17 @@ learning_rate = 0.05
 
 # Randomly initialize input weights, predicted outputs p_y, and error terms : 
 def weights_for_perceptron( num_of_input_weights ) :
-    # np.zeros( x ) : create an array with x cells and default value of each elements is 0.
-    # default bias weight = weights[ 0 ] = 0.
+    # np.zeros() : create an array / a matrix / a tensor structure with default value of each elements is 0.
+    # np.zeros( x ) = create an array with default value of each elements is 0 for x elements
+    # um_of_input_weights + 1 : add 1 cell for bias weight ( w0 ).
+    # default vale of bias weight : weight[ i ][ 0 ] = 0
     weights = np.zeros( num_of_input_weights + 1 ) 
     
-    # range( start, stop ) : interval = [ start, stop - 1 ]
-    # range( stop ) : interval = [ 0, stop - 1 ]
-    for i in range( 1, ( num_of_input_weights + 1  ) ) :
-        # np.random.uniform( x, y ) : create a randomly and uniformly distributed value between x and y.
+    # range( start , stop ) : creat a rule interval = [ start, stop - 1 ] , but not entity that rule.
+    # range( stop ) = # range( 0 , stop ) : creat a rule interval = [ 0 , stop - 1 ] , but not entity that rule.
+    # range( 1 ,... : leave index = 0 for bias weight ( w0 )
+    for i in range( 1 , ( num_of_input_weights + 1  ) ) :
+        # np.random.uniform( x , y ) : create a randomly and uniformly distributed value between x and y.
         # default input weights = weights[ 1 ] ~ weights[ num_of_input_weights ] = value between  -1.0 and 1.0
         weights[ i ] = np.random.uniform( -1.0, 1.0 )
     return weights
