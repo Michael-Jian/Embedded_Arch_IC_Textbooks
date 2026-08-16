@@ -135,7 +135,7 @@ chart_x = [] # an array for X-axis data（ number of epoch ）
 chart_y_training_error = []  # an array for Y-axis data（ training error ）
 chart_y_test_error = []  # an array for Y-axis data（ test error ）
 
-def show_learning( epoch, acc_of_training_error, acc_of_test_error ):
+def show_learning( epoch, acc_of_training_error, acc_of_test_error ) :
     # tell Python that the "chart_x" , "chart_y_training_error" , "chart_y_test_error" I use later is the old array in global scope, 
     # not the new one I create in this local scope.
     global chart_x
@@ -155,8 +155,10 @@ def plot_learning() :
     # plt.plot( x-axis data coordinates , y-axis data coordinates  , format specifying the line style , text label assigned to the line )
     #'b-' : 'b' sets the color to blue and '-' creates a solid line.
     #'r-' : 'r' sets the color to red and '-' creates a solid line.
-    plt.plot( chart_x , chart_y_training_error , 'r-' , label = 'training error' ) 
-    plt.plot( chart_x , chart_y_test_error , 'b-' , label = 'test error' ) 
+    #'g-' : 'g' sets the color to green and '-' creates a solid line.
+    #'y-' : 'y' sets the color to yellow and '-' creates a solid line.
+    plt.plot( chart_x , chart_y_training_error , 'g-' , label = 'training error' ) 
+    plt.plot( chart_x , chart_y_test_error , 'y-' , label = 'test error' ) 
     # plt.axis( [ xmin , xmax , ymin , ymax ] ) : set limits for x-axis from xmin to xmax and y-axis from ymin to ymax.
     plt.axis( [ 0, len( chart_x ) , 0.0 , 1.0 ] )
     # plt.xlabel( ' ' ) : descriptive label for the horizontal x-axis
