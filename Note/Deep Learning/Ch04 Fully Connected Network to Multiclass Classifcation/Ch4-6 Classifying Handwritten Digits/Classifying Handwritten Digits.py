@@ -168,8 +168,8 @@ def plot_learning() :
     plt.legend() # show legend box ( symbol explaination table ) on the screen.
     # plt.show() # show complete chart on the screen.
     # save the whole figure into .png format
-    plt.savefig('learning_curve.png') 
-    print("learning_curve.png has done")
+    plt.savefig('learnin curve.png') 
+    print("learning curve.png has done")
     
     
 # Forward pass :    
