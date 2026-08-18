@@ -175,7 +175,6 @@ def plot_learning() :
     print("learning curve for Mini Batch Implementation.png has done")
     
 
-#--------------------------------------------------------------------------------------------------#  
 # Forward pass :        
 def forward_pass( batch_of_inputs_x ) :  # matrix( 32 x 785 )
     # tell Python that the "hidden_layer_y" , "output_layer_y" I use later is the old array in global scope, 
@@ -221,7 +220,9 @@ def backward_pass( batch_of_outputs_y ) :   # matrix( 32 x 10 )
     
     # error of hidden perceptron 
     # np.matrix.transpose( matrix ) : transfer matrix( n x m ) into transposed matrix( m x n )   
-    # matrix[ A ] = ( [A]th ) row 
+    # matrix[ A ] = ( [A]th row ) array
+    # matrix[ A , : ] = ( [A]th row ^ [0]th col ~ [last]th col ) array
+    # matrix[ : , B ] = ( [0]th row ~ [last]th row ^ [B]th col ) array
     # matrix[ A  ,  B ] = ( [A]th row ^ [B]th col ) element
     # matrix[ A :  ,  B : ] = ( [A]th row ~ [last]th row ^ [B]th col ~ [last]th col ) matrix
     # matrix[: A ,  : B ] = ( [0]th row ~ [A-1]th row ^ [0]th col ~ [B-1]th col ) matrix
@@ -229,36 +230,57 @@ def backward_pass( batch_of_outputs_y ) :   # matrix( 32 x 10 )
     # np.matrix.transpose( output_layer_w[ : , 1 : ] ) :  matrix( 25 x 10 )
     # output_layer_error : matrix( 10 x 32 )
     # matrix( 25 x 10 ) * matrix( 10 x 32 ) = matrix( 25 x 32 )
-    hidden_layer_error = ( np.matmul( np.matrix.transpose( output_layer_w[ : , 1 : ] ) , output_layer_error ) ) * ( 1.0 - hidden_layer_y**2 ) 
+    hidden_layer_error = ( np.matmul( np.transpose( output_layer_w[ : , 1 : ] ) , output_layer_error ) ) * ( 1.0 - hidden_layer_y**2 ) 
 
 # Weight Adjustment :
 def adjust_weights( batch_of_inputs_x ) :   # matrix( 32 x 785 )
+    # tell Python that the "output_layer_w" , "hidden_layer_w" I use later is the old array in global scope, 
+    # not the new one I create in this local scope. 
     global output_layer_w 
     global hidden_layer_w
 
-    # 建立一個與隱藏層權重同尺寸的暫存全零矩陣，準備用來累加「這批次中每一筆資料」算出來的梯度差值
-    delta_matrix = np.zeros( ( len( hidden_layer_error[:, 0] ), len( batch_of_inputs_x[:, 0] ) ) ) 
+    # adjust weights of hidden layer
+    # len( hidden_layer_error[ : , 0 ] ) : len( array( 25 elements ) ) = 25
+    # len( batch_of_inputs_x[ 0 ] ) : len( array( 785 elements ) ) = 785 
+    # np.zeros( 25 , 785 ) : matrix( 25 x 785 ) with default value  of each element is 0.
+    delta_matrix = np.zeros( ( len( hidden_layer_error[ : , 0 ] ) , len( batch_of_inputs_x[ 0 ] ) ) ) 
+    for i in range( batch_size ) : # 0 ~ 31
+        # np.outer( matrix01 , matrix02 ) : outer matrix multiplication
+        # matrix01 = array( n elements ) -> matrix01 = matrix( n x 1 )
+        # matrix01 = matrix( n x m ) -> matrix01 = matrix( n x 1 )
+        # matrix02 = array( m elements ) -> matrix02 = matrix( 1 x m )
+        # matrix02 = matrix( n x m ) -> matrix02 = matrix( 1 x m )
+        # hidden_layer_error[ : , i ] : array( 25 elements )
+        # batch_of_inputs_x[ i ] : array( 785 elements )
+        # hidden_layer_error[ : , i ] : matrix01 = array( 25 elements ) -> matrix01 = matrix( 25 x 1 )
+        # batch_of_inputs_x[ i ] : matrix02 = array( 785 elements ) -> matrix02 = matrix( 1 x 785 )
+        # np.outer( hidden_layer_error[ : , i ] , batch_of_inputs_x[ i ] ) : matrix( 25 x 1 ) * matrix( 1 x 785 ) = matrix( 25 x 785 )
+        delta_matrix += np.outer( hidden_layer_error[ : , i ] , batch_of_inputs_x[ i ] )
+    # delta_matrix : matrix( 25 x 785 ) = sum of 32 times "np.outer( hidden_layer_error[ : , i ] , batch_of_inputs_x[ i ] )"
+    # delta_matrix /= batch_size : matrix( 25 x 785 ) =  average of 32 times "np.outer( hidden_layer_error[ : , i ] , batch_of_inputs_x[ i ] )"
+    delta_matrix /= batch_size
+    # matrix( 25 x 785 ) = matrix( 25 x 785 ) + learning_rate * -matrix( 25 x 785 )
+    hidden_layer_w = hidden_layer_w + learning_rate * -delta_matrix
     
-    for i in range( batch_size ) : 
-        # 利用迴圈走訪這 32 筆資料，計算每一筆外積並累加到 delta_matrix 中
-        delta_matrix += np.outer( hidden_layer_error[:, i], batch_of_inputs_x[:, i] ) * learning_rate 
-        
-    delta_matrix /= batch_size # 將累加結果除以批次大小，求出這批資料的「平均梯度」
-    hidden_layer_w -= delta_matrix # 用平均梯度來更新隱藏層權重
-    
-    # 重新建立包含整排偏誤 (1.0) 的輸出層輸入矩陣
-    inputs_of_output_perceptron = np.concatenate( ( np.ones( ( 1, batch_size ) ), hidden_layer_y ) ) 
-    
-    # 建立暫存輸出層更新量的空矩陣
-    delta_matrix = np.zeros( ( len( output_layer_error[:, 0] ), len( inputs_of_output_perceptron[:, 0] ) ) ) 
-    
+    # adjust weights of output layer 
+    # matrix( 26 x 32 ) = matrix( 1 x 32 ) + matrix( 25 x 32 )
+    inputs_of_output_perceptron = np.concatenate( ( np.ones( ( 1, batch_size ) ) , hidden_layer_y ) ) 
+    # len( output_layer_error[ : , 0 ] ) = len( array( 10 elemnets ) ) = 10
+    # len( inputs_of_output_perceptron[ : , 0 ] ) =len( array( 26 elements ) ) = 26
+    # np.zeros( 10  , 26 ) : matrix( 10 x 26 ) with default value  of each element is 0.
+    delta_matrix = np.zeros( ( len( output_layer_error[ : , 0 ] ) , len( inputs_of_output_perceptron[ : , 0 ] ) ) ) 
     for i in range( batch_size ) :
-        # 計算輸出層的批次平均梯度累加
-        delta_matrix += np.outer( output_layer_error[:, i], inputs_of_output_perceptron[:, i] ) * learning_rate
-        
-    delta_matrix /= batch_size # 取平均
-    output_layer_w -= delta_matrix # 用平均梯度來更新輸出層權重
-#--------------------------------------------------------------------------------------------------#
+        # output_layer_error[ :, i ] : array( 10 elements )
+        # inputs_of_output_perceptron[ : , i ] : array( 26 elements )
+        # output_layer_error[ :, i ] : matrix01 = array( 10 elements ) -> matrix01 = matrix( 10 x 1 )
+        # inputs_of_output_perceptron[ : , i ] : matrix02 = array( 26 elements ) -> matrix02 = matrix( 1 x 26 )
+        # np.outer( output_layer_error[ :, i ] , inputs_of_output_perceptron[ : , i ] ) : matrix( 10 x 1 ) * matrix( 1 x 26 ) = matrix( 10 x 26 )
+        delta_matrix += np.outer( output_layer_error[ :, i ] , inputs_of_output_perceptron[ : , i ] )
+    # delta_matrix : matrix( 10 x 26 ) = sum of 32 times "np.outer( output_layer_error[ :, i ] , inputs_of_output_perceptron[ : , i ] )"
+    # delta_matrix /= batch_size : matrix( 10 x 26 ) = average of 32 times "np.outer( output_layer_error[ :, i ] , inputs_of_output_perceptron[ : , i ] )"
+    delta_matrix /= batch_size 
+    # matrix( 10 x 26 ) = matrix( 10 x 26 ) + learning_rate * -matrix( 10 x 26 )
+    output_layer_w = output_layer_w + learning_rate * -delta_matrix 
 
 
 #--------------------------------------------------------------------------------------------------#
@@ -266,58 +288,72 @@ def adjust_weights( batch_of_inputs_x ) :   # matrix( 32 x 785 )
 for i in range( epoch ) : 
     
     # training loop
-    np.random.shuffle( index_list ) # 每個 epoch 隨機打亂「批次區塊」的處理順序
+    # output the random sequence of index list for training examples to finish this shuffle command.
+    np.random.shuffle( index_list ) 
     
     correct_training_results = 0 
     
-    for j in index_list :
+    # divide all examples into each batch
+    for j in index_list : #  j = 0 ~ 1874
+        # np.ones( ( batch_size , 785 ) ) : matrix( 32 x 785 ) with default value  of each element is 1.
+        # value of bias input = 1
+        batch_of_inputs_x = np.ones( ( batch_size , 785 ) ) 
+        # np.zeros( ( batch_size , 10 ) ) : matrix( 32 x 10 ) with default value  of each element is 0.
+        batch_of_outputs_y = np.zeros( ( batch_size , 10 ) ) 
         
-        # 建立要送入網路的空白批次矩陣：輸入為 785 x BATCH_SIZE (預設值為1.0，直接滿足偏誤需求)
-        batch_of_inputs_x = np.ones( ( batch_size , 785 ) )  # matrix( 32 x 785)
-        # 建立真實解答的空白批次矩陣：輸出為 10 x BATCH_SIZE
-        batch_of_outputs_y = np.zeros( ( batch_size , 10 ) )  # matrix( 32 x 10 )
-        
-        for i in range( batch_size ) :
-            # 內層迴圈：從原始資料庫將這 BATCH_SIZE 筆資料逐一填入剛剛建立好的空白矩陣中
-            batch_of_inputs_x[ 1 : , i ] = training_inputs_x[ : , j*32 + i ] # 60000 x 784 -> 32 x784
-            batch_of_outputs_y[ : , i ] = training_outputs_y[ : , j*32 + i ] # 60000 x 10 -> 32 x 10 
+        for k in range( batch_size ) : # k = 0 ~ 31
+            # ( [k]th row ^ [1]st col ~ [last]th col ) array( 784 elements ) of [j]th batch of inputs x = ( [j*32+k]th row ) array( 784 elements ) of training inputs x
+            batch_of_inputs_x[ k , 1 : ] = training_inputs_x[ j * 32 + k ] 
+            # ( [k]th row ) array( 10 elements ) of [j]th batch of outputs y = ( [j*32+k]th row ) array( 10 elements ) of training output y
+            batch_of_outputs_y[ k ] = training_outputs_y[ j * 32 + k ]
             
-        forward_pass( batch_of_inputs_x ) # 對「整個批次矩陣」執行一次前向傳播
+        forward_pass( batch_of_inputs_x )
         
-        for k in range( batch_size ) :
-            # 檢驗這 32 筆資料的預測結果(取機率最大的索引)是否與真實標籤相符
-            if output_layer_y[ :, k ].argmax() == batch_of_outputs_y[ :, k ].argmax() : 
+        for k in range( batch_size ) : # k = 0 ~ 31
+            # arrayname.argmax() : find out the maximun value in the array and return the index of the maximun value.
+            # predicted output p_y ? desired output y ( ground thruth )
+            if output_layer_y[ : , k ].argmax() == batch_of_outputs_y[ k ].argmax() :
                 correct_training_results += 1 
                 
-        backward_pass( batch_of_outputs_y ) # 針對整批資料計算誤差
-        adjust_weights( batch_of_inputs_x ) # 利用剛剛算出的批次誤差來調整平均權重
+        backward_pass( batch_of_outputs_y ) 
+        
+        adjust_weights( batch_of_inputs_x ) 
         
     # test loop    
     correct_test_results = 0 
     
-    # 設定 step 為 BATCH_SIZE 進行走訪。為求程式簡潔，直接捨棄最後無法整除的尾端零星測試資料
-    for j in range( 0, ( len( test_inputs_x ) - batch_size ), batch_size ) :
+    # range( start , stop , step ) : creat a rule interval = [ start , stop - 1 ] and the gap between two numbers = "step", but not entity that rule.
+    # list( range( start , stop , step ) ) = create a string [ start , start+1*step , start+2*step ...... , stop-1 ].
+    # because number of test dataset ( x10000 ) can be divide by batch size ( x32 ),
+    # range( 0 , len( test_inputs_x ) , batch_size ) creat a rule interval : [ 0 , 32 , 64 , 96 ......, 9984 ],
+    # j = 9984 and i = 17 , and then test_inputs_x[ j + i ] = test_inputs_x[ 10001 ] which overflow happens,
+    # so we need to discard the last batch size ( x32 ) of test examples in test dataset ( x10000 )
+    # range( 0 , ( len( test_inputs_x ) - batch_size ) , batch_size ) : creat a rule interval  [ 0 , 32 , 64 , 96 ......, 9952 ] != [ 0 , 32 , 64 , 96 ......, 9984 ]
+    for j in range( 0 , ( len( test_inputs_x ) - batch_size ) , batch_size ) :
+        # np.ones( ( batch_size , 785 ) ) : matrix( 32 x 785 ) with default value  of each element is 1.
+        # value of bias input = 1
+        batch_of_inputs_x = np.ones( ( batch_size , 785 ) ) 
+        # np.zeros( ( batch_size , 10 ) ) : matrix( 32 x 10 ) with default value  of each element is 0.
+        batch_of_outputs_y = np.zeros(( batch_size , 10 ) )
         
-        # 建立測試用的空白批次矩陣
-        batch_of_inputs_x = np.ones( ( 785, batch_size ) )
-        batch_of_outputs_y = np.zeros( ( 10, batch_size ) )
-        
-        for k in range( batch_size ) :
-            # 拷貝測試資料填入批次矩陣
-            batch_of_inputs_x[ 1:, k ] = test_inputs_x[ j + k ]
-            batch_of_outputs_y[ :, k ] = test_outputs_y[ j + k ]
+        for k in range( batch_size ) : # k = 0 ~ 31
+            # ( [k]th row ^ [1]st col ~ [last]th col ) array( 784 elements ) of [j]th batch of inputs x = ( [j+k]th row ) array( 784 elements ) of training inputs x
+            batch_of_inputs_x[ k , 1 : ] = test_inputs_x[ j + k ]
+            # ( [k]th row ) array( 10 elements ) of [j]th batch of outputs y = ( [j+k]th row ) array( 10 elements ) of training output y
+            batch_of_outputs_y[ k ] = test_outputs_y[ j + k ]
             
-        forward_pass( batch_of_inputs_x ) # 前向傳播
+        forward_pass( batch_of_inputs_x )
         
         for k in range( batch_size ) :
-            # 統計測試正確數
-            if output_layer_y[ :, k ].argmax() == batch_of_outputs_y[ :, k ].argmax() :
+            # arrayname.argmax() : find out the maximun value in the array and return the index of the maximun value.
+            # predicted output p_y ? desired output y ( ground thruth )
+            if output_layer_y[ : , k ].argmax() == batch_of_outputs_y[ k ].argmax() :
                 correct_test_results += 1 
                 
-    # show progress (此函式呼叫與原本完全相同)
+
     show_learning( i , 
-                  correct_training_results / len( training_inputs_x ) , 
-                  correct_test_results / len( test_inputs_x ) )  
+                  correct_training_results / len( training_inputs_x ) ,  # accuracy of training error = correct results / total training results
+                  correct_test_results / len( test_inputs_x ) )  # accuracy of test error = correct results / total test results
 
 plot_learning()
 #--------------------------------------------------------------------------------------------------#

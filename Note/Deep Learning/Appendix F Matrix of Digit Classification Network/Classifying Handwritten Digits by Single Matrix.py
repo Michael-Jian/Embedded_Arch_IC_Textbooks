@@ -210,7 +210,9 @@ def backward_pass( one_of_outputs_y ) : # one_of_outputs_y : array( 10 elelments
         
     # error of hidden perceptron 
     # np.matrix.transpose( matrix ) : transfer matrix( n x m ) into transposed matrix( m x n )   
-    # matrix[ A ] = ( [A]th ) row 
+    # matrix[ A ] = ( [A]th row ) array
+    # matrix[ A , : ] = ( [A]th row ^ [0]th col ~ [last]th col ) array
+    # matrix[ : , B ] = ( [0]th row ~ [last]th row ^ [B]th col ) array
     # matrix[ A  ,  B ] = ( [A]th row ^ [B]th col ) element
     # matrix[ A :  ,  B : ] = ( [A]th row ~ [last]th row ^ [B]th col ~ [last]th col ) matrix
     # matrix[: A ,  : B ] = ( [0]th row ~ [A-1]th row ^ [0]th col ~ [B-1]th col ) matrix
@@ -223,7 +225,7 @@ def backward_pass( one_of_outputs_y ) : # one_of_outputs_y : array( 10 elelments
     # matrix( 25 x 10 ) * matrix( 10 x 1 ) = matrix( 25 x 1 )
     hidden_layer_error = ( np.matmul( np.matrix.transpose( output_layer_w[ : , 1 : ] ), output_layer_error ) ) *  ( 1.0 - hidden_layer_y**2 )
 
-# Weight Adjustment (單一矩陣版本):   
+# Weight Adjustment :   
 def adjust_weights( one_of_inputs_x ) : # one_of_inputs_x : array( 785 elements )
     # tell Python that the "output_layer_w" , "hidden_layer_w" I use later is the old array in global scope, 
     # not the new one I create in this local scope. 
@@ -239,7 +241,7 @@ def adjust_weights( one_of_inputs_x ) : # one_of_inputs_x : array( 785 elements 
     # one_of_inputs_x : matrix02 = array( 785 elelments ) -> matrix02 = matrix( 1 x 785 )
     # np.outer( hidden_layer_error, one_of_inputs_x ) : matrix( 25 x 1 ) * matrix( 1 x 785 ) = matrix( 25 x 785 )
     # matrix( 25 x 785 ) = matrix( 25 x 785 ) + learning_rate * -1 * matrix( 25 x 785 )
-    hidden_layer_w = hidden_layer_w + learning_rate * -np.outer( hidden_layer_error, one_of_inputs_x )
+    hidden_layer_w = hidden_layer_w + learning_rate * -np.outer( hidden_layer_error , one_of_inputs_x )
     
     # adjust weights of output layer  
     inputs_of_output_perceptron = np.concatenate( ( np.array( [ 1.0 ] ), hidden_layer_y ) ) # array( 26 elements ) 
