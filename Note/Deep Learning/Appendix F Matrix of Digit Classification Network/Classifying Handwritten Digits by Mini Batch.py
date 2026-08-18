@@ -5,10 +5,10 @@ import idx2numpy # for MNIST dataset
 
 
 # Insert files path : 
-TRAINING_IMAGE_FILENAME = '/home/michael/Embedded_Arch_IC_Textbooks/Note/Deep Learning/Ch04 Fully Connected Network to Multiclass Classifcation/Ch4-6 Classifying Handwritten Digits/mnist dataset/train-images.idx3-ubyte'
-TRAINING_LABEL_FILENAME = '/home/michael/Embedded_Arch_IC_Textbooks/Note/Deep Learning/Ch04 Fully Connected Network to Multiclass Classifcation/Ch4-6 Classifying Handwritten Digits/mnist dataset/train-labels.idx1-ubyte'
-TEST_IMAGE_FILENAME = '/home/michael/Embedded_Arch_IC_Textbooks/Note/Deep Learning/Ch04 Fully Connected Network to Multiclass Classifcation/Ch4-6 Classifying Handwritten Digits/mnist dataset/t10k-images.idx3-ubyte'
-TEST_LABEL_FILENAME = '/home/michael/Embedded_Arch_IC_Textbooks/Note/Deep Learning/Ch04 Fully Connected Network to Multiclass Classifcation/Ch4-6 Classifying Handwritten Digits/mnist dataset/t10k-labels.idx1-ubyte'
+TRAINING_IMAGE_FILENAME = '/home/michael/Embedded_Arch_IC_Textbooks/Note/Deep Learning/Appendix F Matrix of Digit Classification Network/mnist dataset/train-images.idx3-ubyte'
+TRAINING_LABEL_FILENAME = '/home/michael/Embedded_Arch_IC_Textbooks/Note/Deep Learning/Appendix F Matrix of Digit Classification Network/mnist dataset/train-labels.idx1-ubyte'
+TEST_IMAGE_FILENAME = '/home/michael/Embedded_Arch_IC_Textbooks/Note/Deep Learning/Appendix F Matrix of Digit Classification Network/mnist dataset/t10k-images.idx3-ubyte'
+TEST_LABEL_FILENAME = '/home/michael/Embedded_Arch_IC_Textbooks/Note/Deep Learning/Appendix F Matrix of Digit Classification Network/mnist dataset/t10k-labels.idx1-ubyte'
 
 
 # Prepare pair training examples : 
@@ -175,56 +175,49 @@ def plot_learning() :
 # Forward pass :    
 def forward_pass( one_of_inputs_x ) : 
     # tell Python that the "hidden_layer_y" , "output_layer_y" I use later is the old array in global scope, 
-    # not the new one I create in this local scope.
+    # not the new one I create in this local scope.    
     global hidden_layer_y 
     global output_layer_y
     
     # computing activation function for hidden layer
-    # np.matmul( matrix01 , matrix02 ) : standard matrix multiplication
-    # matrix01 = array( n elements ) -> matrix01 = matrix( 1 x n )
-    # matrix01 = matrix( n x m ) -> matrix01 = matrix( n x m )
-    # matrix02 = array( m elements ) -> matrix02 = matrix( m x 1 )
-    # matrix02 = matrix( n x m ) -> matrix02 = matrix( n x m )   
-    # one_of_inputs_x : matrix02 = array( 785 elements ) -> matrix02 = matrix( 785 x 1 )
-    z = np.matmul( hidden_layer_w , one_of_inputs_x ) # matrix( 25 x 785 ) * matrix( 785 x 1 ) = matrix( 25 x 1 )
-    hidden_layer_y = np.tanh( z )  # array( 25 elements )
-    
+    for i , w in enumerate( hidden_layer_w ) :                                                                 # 25 * ( 784 + 1 )
+        z = np.dot( w , one_of_inputs_x )                                                                     # ( 784 + 1 ) * ( 784 + 1 )  = 1
+        hidden_layer_y[ i ] = np.tanh( z )  # outputs of hidden layer = activation functions for hidden layer # 25 * 1
+        
     # computing activation function for output layer
     # np.concatenate( ( array0 , array1 , array2 , ...... , arrayn ) ) : join array0 , array1 , array2 , ...... , arrayn together into a new array.
     # np.concatenate( ( np.array( [ 0 , 1 ] ) , np.array( [ 2 , 3 , 4 ]  ) ) = np.array( [ 0 , 1 , 2 , 3 , 4 ] )
-    inputs_of_output_perceptron = np.concatenate( ( np.array( [ 1.0 ] ) , hidden_layer_y ) ) # array( 26 elements ) 
-    # inputs_of_output_perceptron : matrix02 = array( 26 elements ) -> matrix02 = matrix( 26 x 1 ) 
-    z = np.matmul( output_layer_w, inputs_of_output_perceptron ) # matrix( 10 x 26 ) * matrix( 26 x 1 ) = matrix( 10 x 1 )
-    output_layer_y = 1.0 / ( 1.0 + np.exp( -z ) ) # array( 10 elements )
+    inputs_of_output_perceptron = np.concatenate( ( np.array( [ 1.0 ] ) , hidden_layer_y ) )  # 1 + 25
+    for i , w in enumerate( output_layer_w ) :                                                                 # 10 * ( 25 + 1 )
+        z = np.dot( w , inputs_of_output_perceptron )                                                         # ( 25 + 1 ) * ( 25 + 1 ) = 1
+        output_layer_y[ i ] = 1.0 / ( 1.0 + np.exp( -z ) )                                                          # 10 * 1 
 
 # Backward pass :    
 def backward_pass( one_of_outputs_y ) :
     # tell Python that the "hidden_layer_error" , "output_layer_error" I use later is the old array in global scope, 
     # not the new one I create in this local scope.  
-    global hidden_layer_error   
+    global hidden_layer_error 
     global output_layer_error
     
     # error of output perceptron
-    overall_error = -( one_of_outputs_y - output_layer_y ) # array( 10 elements )
-    output_layer_error = overall_error * ( output_layer_y * ( 1.0 - output_layer_y ) )  # array( 10 elements )
+    for i , y in enumerate( output_layer_y ) : 
+        overall_error = -2 * ( one_of_outputs_y[ i ] - y )
+        output_layer_error[ i ] =  overall_error * ( y * ( 1.0 - y ) ) 
         
     # error of hidden perceptron 
-    # output_layer_w[:, 1:] 代表取出剔除掉偏誤權重(第 0 行)後的所有權重
-    # np.matrix.transpose( matrix ) : transfer matrix( n x m ) into transposed matrix( m x n )   
-    # matrix[ A ] = ( [A]th ) row 
-    # matrix[ A  ,  B ] = ( [A]th row ^ [B]th col ) element
-    # matrix[ A :  ,  B : ] = ( [A]th row ~ [last]th row ^ [B]th col ~ [last]th col ) matrix
-    # matrix[: A ,  : B ] = ( [0]th row ~ [A-1]th row ^ [0]th col ~ [B-1]th col ) matrix
-    # matrix[A : C , B : D ] = ( [A]th row ~ [C-1]th row ^ [B]th col ~ [D-1]th col ) matrix
-    # np.matrix.transpose( output_layer_w[:, 1:] ) : 
-    # output_layer_w = matrix( 10 x 26 )
-    # output_layer_w[:, 1:] =  matrix( 10 x 25 )
-    # np.matrix.transpose( output_layer_w[:, 1:] ) =  matrix( 25 x 10 )
-    # output_layer_error : matrix02 = array( 10 elements ) -> matrix02 = matrix( 10 x 1 )
-    # matrix( 25 x 10 ) * matrix( 10 x 1 ) = matrix( 25 x 1 )
-    hidden_layer_error = ( np.matmul( np.matrix.transpose( output_layer_w[:, 1:] ), output_layer_error ) ) *  ( 1.0 - hidden_layer_y**2 )
+    for i , y in enumerate( hidden_layer_y ) :
+        # create an array of weights connecting hidden neuron [ i ] and output neurons [ 0 , 1 , ...... 9 ].
+        error_weights = [] 
+        for w in output_layer_w :     # 10 * ( 25 + 1 )
+            # hidden neuron [ i ] will connect to the weight[ i + 1 ] of output neurons [ 0 , 1 , ...... 9 ] 
+            # due to bias input must connect to bias weight ( weight[ 0 ] )
+            error_weights.append( w[ i + 1 ] )
+        # transfer array "error_weights" into array "error_weight_array" which is NumPy format.
+        error_weight_array = np.array(error_weights)
 
-# Weight Adjustment (單一矩陣版本):   
+        hidden_layer_error[ i ] = np.dot( output_layer_error , error_weight_array ) * ( 1.0 - y**2 )
+
+# Weight Adjustment :   
 def adjust_weights( one_of_inputs_x ) :
     # tell Python that the "output_layer_w" , "hidden_layer_w" I use later is the old array in global scope, 
     # not the new one I create in this local scope. 
@@ -232,23 +225,14 @@ def adjust_weights( one_of_inputs_x ) :
     global hidden_layer_w
 
     # adjust weights of hidden layer
-    # np.outer( matrix01 , matrix02 ) : outer matrix multiplication
-    # matrix01 = array( n elements ) -> matrix01 = matrix( n x 1 )
-    # matrix01 = matrix( n x m ) -> matrix01 = matrix( n x 1 )
-    # matrix02 = array( m elements ) -> matrix02 = matrix( 1 x m )
-    # matrix02 = matrix( n x m ) -> matrix02 = matrix( 1 x m )
-    # one_of_inputs_x : matrix02 = array( 785 elelments ) -> matrix02 = matrix( 1 x 785 )
-    # np.outer( hidden_layer_error, one_of_inputs_x ) : matrix( 25 x 1 ) * matrix( 1 x 785 ) = matrix( 25 x 785 )
-    # matrix( 25 x 785 ) = matrix( 25 x 785 ) + learning_rate * -1 * matrix( 25 x 785 )
-    hidden_layer_w = hidden_layer_w + learning_rate * -np.outer( hidden_layer_error, one_of_inputs_x )
+    for i , error in enumerate( hidden_layer_error ) :
+        hidden_layer_w[ i ] = hidden_layer_w[ i ] + learning_rate * -( error * one_of_inputs_x ) 
     
-    # adjust weights of output layer  
-    inputs_of_output_perceptron = np.concatenate( ( np.array( [ 1.0 ] ), hidden_layer_y ) ) # array( 26 elements ) 
-    # inputs_of_output_perceptron : matrix02 = # array( 26 elements ) -> matrix02 = matrix( 1 x 26 )
-    #  array( 10 elements ) : matrix01 = array( 10 elements ) -> matrix01 = matrix( 10 x 1 )
-    # np.outer( output_layer_error, inputs_of_output_perceptron ) :  matrix( 10 x 1 ) * matrix( 1 x 26 ) = matrix( 10 x 26 )
-    # matrix( 10 x 26 ) = matrix( 10 x 26) + learning_rate * -1 * matrix( 10 x 26 )
-    output_layer_w = output_layer_w + learning_rate * -np.outer( output_layer_error , inputs_of_output_perceptron )
+    # adjust weights of output layer                          
+    inputs_of_output_perceptron = np.concatenate( ( np.array( [ 1.0 ] ) , hidden_layer_y ) ) 
+    for i , error in enumerate( output_layer_error ) :
+        output_layer_w[ i ] = output_layer_w[ i ] + learning_rate * -( error * inputs_of_output_perceptron ) 
+
 
 
 # Network training loop and test loop and show progress : 
