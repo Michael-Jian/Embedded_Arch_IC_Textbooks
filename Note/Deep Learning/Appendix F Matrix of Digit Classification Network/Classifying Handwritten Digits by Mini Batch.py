@@ -172,58 +172,83 @@ def plot_learning() :
     print("learning_curve.png has done")
     
     
-# ------------------------------------------------------------------------------------------------------------------------------ #
 # Forward pass :    
 def forward_pass( one_of_inputs_x ) : 
-    # 宣告修改全域變數，此處與舊版相同
+    # tell Python that the "hidden_layer_y" , "output_layer_y" I use later is the old array in global scope, 
+    # not the new one I create in this local scope.
     global hidden_layer_y 
     global output_layer_y
     
-    # 隱藏層的激勵函數計算
-    hidden_layer_z = np.matmul( hidden_layer_w, one_of_inputs_x ) # 將隱藏層權重矩陣與單一輸入向量直接進行矩陣相乘，一次算出 25 個結果
-    hidden_layer_y = np.tanh( hidden_layer_z )  # 透過 tanh 激勵函數平行計算所有隱藏層神經元的輸出
+    # computing activation function for hidden layer
+    # np.matmul( matrix01 , matrix02 ) : standard matrix multiplication
+    # matrix01 = array( n elements ) -> matrix01 = matrix( 1 x n )
+    # matrix01 = matrix( n x m ) -> matrix01 = matrix( n x m )
+    # matrix02 = array( m elements ) -> matrix02 = matrix( m x 1 )
+    # matrix02 = matrix( n x m ) -> matrix02 = matrix( n x m )   
+    # one_of_inputs_x : matrix02 = array( 785 elements ) -> matrix02 = matrix( 785 x 1 )
+    z = np.matmul( hidden_layer_w , one_of_inputs_x ) # matrix( 25 x 785 ) * matrix( 785 x 1 ) = matrix( 25 x 1 )
+    hidden_layer_y = np.tanh( z )  # array( 25 elements )
     
-    # 將 1.0 (偏誤值) 拼接在隱藏層輸出的一維陣列最前面，作為輸出層的輸入
-    inputs_of_output_perceptron = np.concatenate( ( np.array( [ 1.0 ] ), hidden_layer_y ) ) 
-    
-    # 輸出層的激勵函數計算
-    output_layer_z = np.matmul( output_layer_w, inputs_of_output_perceptron ) # 將輸出層權重矩陣與剛拼接好的輸入向量進行矩陣相乘
-    output_layer_y = 1.0 / ( 1.0 + np.exp( -output_layer_z ) ) # 透過 sigmoid 激勵函數平行計算所有輸出層神經元的輸出
+    # computing activation function for output layer
+    # np.concatenate( ( array0 , array1 , array2 , ...... , arrayn ) ) : join array0 , array1 , array2 , ...... , arrayn together into a new array.
+    # np.concatenate( ( np.array( [ 0 , 1 ] ) , np.array( [ 2 , 3 , 4 ]  ) ) = np.array( [ 0 , 1 , 2 , 3 , 4 ] )
+    inputs_of_output_perceptron = np.concatenate( ( np.array( [ 1.0 ] ) , hidden_layer_y ) ) # array( 26 elements ) 
+    # inputs_of_output_perceptron : matrix02 = array( 26 elements ) -> matrix02 = matrix( 26 x 1 ) 
+    z = np.matmul( output_layer_w, inputs_of_output_perceptron ) # matrix( 10 x 26 ) * matrix( 26 x 1 ) = matrix( 10 x 1 )
+    output_layer_y = 1.0 / ( 1.0 + np.exp( -z ) ) # array( 10 elements )
 
-# Backward pass (單一矩陣版本):    
+# Backward pass :    
 def backward_pass( one_of_outputs_y ) :
-    global hidden_layer_error 
+    # tell Python that the "hidden_layer_error" , "output_layer_error" I use later is the old array in global scope, 
+    # not the new one I create in this local scope.  
+    global hidden_layer_error   
     global output_layer_error
     
-    # 平行計算每個輸出層神經元的誤差
-    error_prime = -( one_of_outputs_y - output_layer_y ) # 陣列直接相減：計算真實輸出(y_truth)與預測輸出的差異
-    output_log_prime = output_layer_y * ( 1.0 - output_layer_y ) # 平行計算 sigmoid 函數的導數
-    output_layer_error = error_prime * output_log_prime # 將兩者陣列元素一一相乘，得到完整的輸出層誤差陣列
+    # error of output perceptron
+    overall_error = -( one_of_outputs_y - output_layer_y ) # array( 10 elements )
+    output_layer_error = overall_error * ( output_layer_y * ( 1.0 - output_layer_y ) )  # array( 10 elements )
         
-    # 平行計算每個隱藏層神經元的誤差
-    hidden_tanh_prime = 1.0 - hidden_layer_y**2 # 平行計算 tanh 函數的導數
+    # error of hidden perceptron 
     # output_layer_w[:, 1:] 代表取出剔除掉偏誤權重(第 0 行)後的所有權重
-    # np.matrix.transpose 則是將矩陣轉置，以符合矩陣相乘時的維度對齊需求
-    hidden_weighted_error = np.matmul( np.matrix.transpose( output_layer_w[:, 1:] ), output_layer_error )
-    hidden_layer_error = hidden_tanh_prime * hidden_weighted_error # 兩陣列元素相乘得到隱藏層誤差陣列
+    # np.matrix.transpose( matrix ) : transfer matrix( n x m ) into transposed matrix( m x n )   
+    # matrix[ A ] = ( [A]th ) row 
+    # matrix[ A  ,  B ] = ( [A]th row ^ [B]th col ) element
+    # matrix[ A :  ,  B : ] = ( [A]th row ~ [last]th row ^ [B]th col ~ [last]th col ) matrix
+    # matrix[: A ,  : B ] = ( [0]th row ~ [A-1]th row ^ [0]th col ~ [B-1]th col ) matrix
+    # matrix[A : C , B : D ] = ( [A]th row ~ [C-1]th row ^ [B]th col ~ [D-1]th col ) matrix
+    # np.matrix.transpose( output_layer_w[:, 1:] ) : 
+    # output_layer_w = matrix( 10 x 26 )
+    # output_layer_w[:, 1:] =  matrix( 10 x 25 )
+    # np.matrix.transpose( output_layer_w[:, 1:] ) =  matrix( 25 x 10 )
+    # output_layer_error : matrix02 = array( 10 elements ) -> matrix02 = matrix( 10 x 1 )
+    # matrix( 25 x 10 ) * matrix( 10 x 1 ) = matrix( 25 x 1 )
+    hidden_layer_error = ( np.matmul( np.matrix.transpose( output_layer_w[:, 1:] ), output_layer_error ) ) *  ( 1.0 - hidden_layer_y**2 )
 
 # Weight Adjustment (單一矩陣版本):   
 def adjust_weights( one_of_inputs_x ) :
+    # tell Python that the "output_layer_w" , "hidden_layer_w" I use later is the old array in global scope, 
+    # not the new one I create in this local scope. 
     global output_layer_w 
     global hidden_layer_w
 
-    # 計算隱藏層權重的更新差值矩陣
-    # np.outer 會將「誤差陣列」與「輸入陣列」進行外積，直接產生一個與權重矩陣尺寸一模一樣的差值矩陣
-    delta_matrix = np.outer( hidden_layer_error, one_of_inputs_x ) * learning_rate 
-    hidden_layer_w -= delta_matrix # 一次性直接將整組隱藏層權重扣除差值
+    # adjust weights of hidden layer
+    # np.outer( matrix01 , matrix02 ) : outer matrix multiplication
+    # matrix01 = array( n elements ) -> matrix01 = matrix( n x 1 )
+    # matrix01 = matrix( n x m ) -> matrix01 = matrix( n x 1 )
+    # matrix02 = array( m elements ) -> matrix02 = matrix( 1 x m )
+    # matrix02 = matrix( n x m ) -> matrix02 = matrix( 1 x m )
+    # one_of_inputs_x : matrix02 = array( 785 elelments ) -> matrix02 = matrix( 1 x 785 )
+    # np.outer( hidden_layer_error, one_of_inputs_x ) : matrix( 25 x 1 ) * matrix( 1 x 785 ) = matrix( 25 x 785 )
+    # matrix( 25 x 785 ) = matrix( 25 x 785 ) + learning_rate * -1 * matrix( 25 x 785 )
+    hidden_layer_w = hidden_layer_w + learning_rate * -np.outer( hidden_layer_error, one_of_inputs_x )
     
-    # 再次重新建立包含 1.0 (偏誤值) 的輸出層輸入陣列
-    inputs_of_output_perceptron = np.concatenate( ( np.array( [ 1.0 ] ), hidden_layer_y ) ) 
-    
-    # 計算輸出層權重的更新差值矩陣
-    delta_matrix = np.outer( output_layer_error, inputs_of_output_perceptron ) * learning_rate 
-    output_layer_w -= delta_matrix # 一次性直接將整組輸出層權重扣除差值
-# ------------------------------------------------------------------------------------------------------------------------------ #
+    # adjust weights of output layer  
+    inputs_of_output_perceptron = np.concatenate( ( np.array( [ 1.0 ] ), hidden_layer_y ) ) # array( 26 elements ) 
+    # inputs_of_output_perceptron : matrix02 = # array( 26 elements ) -> matrix02 = matrix( 1 x 26 )
+    #  array( 10 elements ) : matrix01 = array( 10 elements ) -> matrix01 = matrix( 10 x 1 )
+    # np.outer( output_layer_error, inputs_of_output_perceptron ) :  matrix( 10 x 1 ) * matrix( 1 x 26 ) = matrix( 10 x 26 )
+    # matrix( 10 x 26 ) = matrix( 10 x 26) + learning_rate * -1 * matrix( 10 x 26 )
+    output_layer_w = output_layer_w + learning_rate * -np.outer( output_layer_error , inputs_of_output_perceptron )
 
 
 # Network training loop and test loop and show progress : 

@@ -180,14 +180,14 @@ def forward_pass( one_of_inputs_x ) :
     global output_layer_y
     
     # computing activation function for hidden layer
-    for i , w in enumerate( hidden_layer_w ) :                                                                 # 25 * ( 784 + 1 )
-        z = np.dot( w , one_of_inputs_x )                                                                     # ( 784 + 1 ) * ( 784 + 1 )  = 1
-        hidden_layer_y[ i ] = np.tanh( z )  # outputs of hidden layer = activation functions for hidden layer # 25 * 1
+    for i , w in enumerate( hidden_layer_w ) :                                                               
+        z = np.dot( w , one_of_inputs_x )                                                                  
+        hidden_layer_y[ i ] = np.tanh( z )  # outputs of hidden layer = activation functions for hidden layer
         
     # computing activation function for output layer
     # np.concatenate( ( array0 , array1 , array2 , ...... , arrayn ) ) : join array0 , array1 , array2 , ...... , arrayn together into a new array.
     # np.concatenate( ( np.array( [ 0 , 1 ] ) , np.array( [ 2 , 3 , 4 ]  ) ) = np.array( [ 0 , 1 , 2 , 3 , 4 ] )
-    inputs_of_output_perceptron = np.concatenate( ( np.array( [ 1.0 ] ) , hidden_layer_y ) )  # 1 + 25
+    inputs_of_output_perceptron = np.concatenate( ( np.array( [ 1.0 ] ) , hidden_layer_y ) )  
     for i , w in enumerate( output_layer_w ) :                                                                 # 10 * ( 25 + 1 )
         z = np.dot( w , inputs_of_output_perceptron )                                                         # ( 25 + 1 ) * ( 25 + 1 ) = 1
         output_layer_y[ i ] = 1.0 / ( 1.0 + np.exp( -z ) )                                                          # 10 * 1 
