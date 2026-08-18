@@ -283,7 +283,6 @@ def adjust_weights( batch_of_inputs_x ) :   # matrix( 32 x 785 )
     output_layer_w = output_layer_w + learning_rate * -delta_matrix 
 
 
-#--------------------------------------------------------------------------------------------------#
 # Network training loop and test loop and show progress : 
 for i in range( epoch ) : 
     
@@ -356,4 +355,3 @@ for i in range( epoch ) :
                   correct_test_results / len( test_inputs_x ) )  # accuracy of test error = correct results / total test results
 
 plot_learning()
-#--------------------------------------------------------------------------------------------------#
