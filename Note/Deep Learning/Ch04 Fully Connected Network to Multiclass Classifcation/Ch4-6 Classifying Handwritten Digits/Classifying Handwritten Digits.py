@@ -118,15 +118,15 @@ def weight_per_layer( num_of_perceptron , num_of_input_weight_per_perceptron ) :
 
 # the hidden_layer has 25 hidden perceptrons and 784 input weights + 1 bias weight per perceptron
 hidden_layer_w = weight_per_layer( 25 , 784 )
-# the hidden_layer has 25 outputs for 25 hidden perceptrons.
+# the hidden_layer has 25 outputs for 25 hidden perceptrons corresponding to one example in one time.
 hidden_layer_y = np.zeros( 25 ) 
-# the hidden_layer has 25 error for 25 hidden perceptrons.
+# the hidden_layer has 25 error for 25 hidden perceptrons corresponding to one example in one time.
 hidden_layer_error = np.zeros( 25 )
 # the output_layer has 10 output perceptrons and 25 input weights + 1 bias weight per perceptron
 output_layer_w = weight_per_layer( 10 , 25 ) 
-# the output_layer has 10 outputs for 10 output perceptrons.
+# the output_layer has 10 outputs for 10 output perceptrons corresponding to one example in one time.
 output_layer_y = np.zeros( 10 ) 
-# the output_layer has 10 error for 10 output perceptrons.
+# the output_layer has 10 error for 10 output perceptrons corresponding to one example in one time.
 output_layer_error = np.zeros( 10 )
 
 

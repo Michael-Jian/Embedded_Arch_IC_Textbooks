@@ -117,17 +117,17 @@ def weight_per_layer( num_of_perceptron , num_of_input_weight_per_perceptron ) :
     return weights
 
 # the hidden_layer has 25 hidden perceptrons and 784 input weights + 1 bias weight per perceptron
-hidden_layer_w = weight_per_layer( 25 , 784 )
-# the hidden_layer has 25 outputs for 25 hidden perceptrons.
-hidden_layer_y = np.zeros( 25 ) 
-# the hidden_layer has 25 error for 25 hidden perceptrons.
-hidden_layer_error = np.zeros( 25 )
+hidden_layer_w = weight_per_layer( 25 , 784 ) # matrix( 25 x 785 )
+# the hidden_layer has 25 outputs for 25 hidden perceptrons corresponding to one example in one time.
+hidden_layer_y = np.zeros( 25 )  # array( 25 elements )
+# the hidden_layer has 25 error for 25 hidden perceptrons corresponding to one example in one time.
+hidden_layer_error = np.zeros( 25 )  # array( 25 elements )
 # the output_layer has 10 output perceptrons and 25 input weights + 1 bias weight per perceptron
-output_layer_w = weight_per_layer( 10 , 25 ) 
-# the output_layer has 10 outputs for 10 output perceptrons.
-output_layer_y = np.zeros( 10 ) 
-# the output_layer has 10 error for 10 output perceptrons.
-output_layer_error = np.zeros( 10 )
+output_layer_w = weight_per_layer( 10 , 25 ) # matrix( 10 x 26 )
+# the output_layer has 10 outputs for 10 output perceptrons corresponding to one example in one time.
+output_layer_y = np.zeros( 10 )  # array( 10 elements )
+# the output_layer has 10 error for 10 output perceptrons corresponding to one example in one time.
+output_layer_error = np.zeros( 10 )  # array( 10 elements )
 
 
 # Report progress on the learning process : 
@@ -173,7 +173,7 @@ def plot_learning() :
     
     
 # Forward pass :    
-def forward_pass( one_of_inputs_x ) : 
+def forward_pass( one_of_inputs_x ) : # one_of_inputs_x : array( 785 elements )
     # tell Python that the "hidden_layer_y" , "output_layer_y" I use later is the old array in global scope, 
     # not the new one I create in this local scope.
     global hidden_layer_y 
@@ -198,7 +198,7 @@ def forward_pass( one_of_inputs_x ) :
     output_layer_y = 1.0 / ( 1.0 + np.exp( -z ) ) # array( 10 elements )
 
 # Backward pass :    
-def backward_pass( one_of_outputs_y ) :
+def backward_pass( one_of_outputs_y ) : # one_of_outputs_y : array( 10 elelments)
     # tell Python that the "hidden_layer_error" , "output_layer_error" I use later is the old array in global scope, 
     # not the new one I create in this local scope.  
     global hidden_layer_error   
@@ -209,7 +209,6 @@ def backward_pass( one_of_outputs_y ) :
     output_layer_error = overall_error * ( output_layer_y * ( 1.0 - output_layer_y ) )  # array( 10 elements )
         
     # error of hidden perceptron 
-    # output_layer_w[:, 1:] 代表取出剔除掉偏誤權重(第 0 行)後的所有權重
     # np.matrix.transpose( matrix ) : transfer matrix( n x m ) into transposed matrix( m x n )   
     # matrix[ A ] = ( [A]th ) row 
     # matrix[ A  ,  B ] = ( [A]th row ^ [B]th col ) element
@@ -219,13 +218,13 @@ def backward_pass( one_of_outputs_y ) :
     # np.matrix.transpose( output_layer_w[:, 1:] ) : 
     # output_layer_w = matrix( 10 x 26 )
     # output_layer_w[:, 1:] =  matrix( 10 x 25 )
-    # np.matrix.transpose( output_layer_w[:, 1:] ) =  matrix( 25 x 10 )
+    # np.matrix.transpose( output_layer_w[:, 1:] ) : matrix( 25 x 10 )
     # output_layer_error : matrix02 = array( 10 elements ) -> matrix02 = matrix( 10 x 1 )
     # matrix( 25 x 10 ) * matrix( 10 x 1 ) = matrix( 25 x 1 )
-    hidden_layer_error = ( np.matmul( np.matrix.transpose( output_layer_w[:, 1:] ), output_layer_error ) ) *  ( 1.0 - hidden_layer_y**2 )
+    hidden_layer_error = ( np.matmul( np.matrix.transpose( output_layer_w[ : , 1 : ] ), output_layer_error ) ) *  ( 1.0 - hidden_layer_y**2 )
 
 # Weight Adjustment (單一矩陣版本):   
-def adjust_weights( one_of_inputs_x ) :
+def adjust_weights( one_of_inputs_x ) : # one_of_inputs_x : array( 785 elements )
     # tell Python that the "output_layer_w" , "hidden_layer_w" I use later is the old array in global scope, 
     # not the new one I create in this local scope. 
     global output_layer_w 
