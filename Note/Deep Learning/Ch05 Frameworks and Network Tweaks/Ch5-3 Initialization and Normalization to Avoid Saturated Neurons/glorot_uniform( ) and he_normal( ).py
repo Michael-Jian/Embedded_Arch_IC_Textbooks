@@ -5,7 +5,7 @@ keras = tf.keras  # using API in high abstraction level
 
 
 # Create a sequential neural network : 
-model = keras.Sequential([
+neural_network = keras.Sequential([
    
     keras.layers.Flatten( input_shape = ( 28 , 28 ) ) , 
    
