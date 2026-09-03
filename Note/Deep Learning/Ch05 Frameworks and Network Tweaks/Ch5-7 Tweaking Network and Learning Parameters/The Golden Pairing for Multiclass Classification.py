@@ -21,12 +21,12 @@ neural_network = keras.Sequential ( [
     keras.layers.Flatten( input_shape = ( 28 , 28 ) ) , 
     # hidden layer : 
     # activation function : ReLU fumnction.
-    # initializer of input weights : He fuuction with nrmal distribution.
+    # initializer of input weights : He_Normal fuction.
     # initializer of bias weights  : zeros.
     keras.layers.Dense( 25 , activation='relu' , kernel_initializer='he_normal' , bias_initializer='zeros' ) ,
     # output layer : 
     # activation function : SoftMax fumnction.
-    # initializer of input weights : Glorot fuuction with uniform distribution.
+    # initializer of input weights : Glorot_Uniform fuuction with uniform distribution.
     # initializer of bias weights  : zeros.
     keras.layers.Dense( 10 , activation='softmax', kernel_initializer='glorot_uniform', bias_initializer='zeros' )
                                     ] )
@@ -37,7 +37,6 @@ neural_network = keras.Sequential ( [
 # loss function : categorical cross entropy function.
 # optimizer : Adam function ( use 'adam' directly without initializon due to no adjusted hyperparameters )
 neural_network.compile( loss = 'categorical_crossentropy', optimizer = 'adam' , metrics= [ 'accuracy' ] )
-
 # creating a trainer with training datasets , test datasets , epoch , batch size , type of verbosity , shuffle mechanism
 neural_network_trainer = neural_network.fit( 
                          train_images , train_labels ,
