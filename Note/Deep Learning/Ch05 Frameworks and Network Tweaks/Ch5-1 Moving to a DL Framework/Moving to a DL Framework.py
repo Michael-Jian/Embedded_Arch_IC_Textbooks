@@ -35,7 +35,7 @@ test_labels = to_categorical( test_labels , num_classes = 10 )
                 # type of neural network
 neural_network = keras.Sequential( [ 
     # input layer : 
-    # reshaping multi-dimensional inputs into one dimensional inputs.
+    # 'Flatten' suggest that it is a layer which reshapes multi-dimensional inputs into one dimensional inputs.
     keras.layers.Flatten( input_shape = ( 28 , 28 ) ) , 
     # hidden layer : 
     # 'Dense' suggest that it's a fully connected layer.
