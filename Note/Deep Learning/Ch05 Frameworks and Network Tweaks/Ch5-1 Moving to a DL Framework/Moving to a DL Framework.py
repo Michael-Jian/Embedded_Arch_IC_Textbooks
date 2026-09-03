@@ -32,7 +32,6 @@ test_labels = to_categorical( test_labels , num_classes = 10 )
 
 
 # Create a sequential neural network : 
-                # type of neural network
 neural_network = keras.Sequential( [ 
     # input layer : 
     # 'Flatten' suggest that it is a layer which reshapes multi-dimensional inputs into one dimensional inputs.
