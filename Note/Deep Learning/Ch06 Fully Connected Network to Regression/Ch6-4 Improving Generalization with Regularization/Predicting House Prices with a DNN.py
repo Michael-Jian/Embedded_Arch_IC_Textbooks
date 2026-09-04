@@ -47,14 +47,14 @@ from keras.regularizers import l2 # 匯入 L2 正規化模組[cite: 1]
 
 model.add(Dense(64, activation='relu',
                 kernel_regularizer=l2(0.1), # 對神經層權重 (kernel) 進行強度 0.1 的 L2 正規化[cite: 1]
-                bias_regularizer=l2(0.1), # 對偏置值 (bias) 進行強度 0.1 的 L2 正規化（註：一般常見做法不針對 bias 正規化，Keras 允許拆分設定）[cite: 1]
+                bias_regularizer=l2(0), # 對偏置值 (bias) 進行強度 0.1 的 L2 正規化（註：一般常見做法不針對 bias 正規化，Keras 允許拆分設定）[cite: 1]
                 input_shape=[13])) # 設定 13 個特徵輸入[cite: 1]
 model.add(Dense(64, activation='relu',
                 kernel_regularizer=l2(0.1), # 對第二隱藏層權重進行強度 0.1 的 L2 正規化[cite: 1]
-                bias_regularizer=l2(0.1))) # 對第二隱藏層偏置值進行強度 0.1 的 L2 正規化[cite: 1]
+                bias_regularizer=l2(0))) # 對第二隱藏層偏置值進行強度 0.1 的 L2 正規化[cite: 1]
 model.add(Dense(1, activation='linear',
                 kernel_regularizer=l2(0.1), # 對輸出層權重進行強度 0.1 的 L2 正規化[cite: 1]
-                bias_regularizer=l2(0.1))) # 對輸出層偏置值進行強度 0.1 的 L2 正規化[cite: 1]
+                bias_regularizer=l2(0))) # 對輸出層偏置值進行強度 0.1 的 L2 正規化[cite: 1]
 
 # -------------------------------------------------------------------------------------------------- 
 
