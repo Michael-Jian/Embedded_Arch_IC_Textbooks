@@ -10,9 +10,9 @@ import logging  # control runtime log messages
 tf.get_logger().setLevel( logging.ERROR ) # suppress warning logs
 
 
-
-EPOCHS = 500 # 設定訓練週期為 500 次
-BATCH_SIZE = 16 # 設定每次訓練更新的批次大小為 16
+# Initializing (hyper)parameters : 
+epoch = 500 
+batch_size = 16
 
 # Read and standardize the data.
 boston_housing = keras.datasets.boston_housing # 載入內建的波士頓房價資料集
