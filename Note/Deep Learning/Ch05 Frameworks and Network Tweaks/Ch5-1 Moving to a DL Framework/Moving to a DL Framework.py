@@ -1,4 +1,4 @@
-# Call libraries :
+# Call Libraries :
 import numpy as np # numerical computing                        
 import tensorflow as tf # chosing specifc DL framework                  
 keras = tf.keras  # using API in high abstraction level                           
@@ -8,7 +8,7 @@ tf.get_logger().setLevel( logging.ERROR ) # suppressing warning logs
 tf.random.set_seed( 7 )     # initializing repeatable random sead
 
 
-# Initializing (hyper)parameters : 
+# Initializing (Hyper)parameters  : 
 epoch = 20
 batch_size = 1 # updating weights with batch size = 1 is equal to updating weights per pair training example.
 # initializing weights with randomly uniform method wth specific range
@@ -17,21 +17,21 @@ RU_weight_initializer = keras.initializers.RandomUniform( minval = -0.1 , maxval
 SGD_optimizer = keras.optimizers.SGD( learning_rate = 0.01 )
 
 
-# Load and Prepare training dataset and test dataset :
-# load MNIST dataset
+# Load and Prepare Training Dataset and Test Dataset :
+# load MNIST dataset ( 60000 training data and 10000 test data which have 784 features per data )
 mnist = keras.datasets.mnist
-( train_images, train_labels ) , ( test_images , test_labels ) = mnist.load_data()
+( training_images, training_labels ) , ( test_images , test_labels ) = mnist.load_data()
 #standarizing :
-mean = np.mean( train_images )
-stddev = np.std( train_images )
-train_images = ( train_images - mean ) / stddev
-test_images = ( test_images - mean ) / stddev
+mean = np.mean( training_images )
+stddev = np.std( training_images )
+training_images = ( training_images - mean ) / stddev
+training_images = ( test_images - mean ) / stddev
 # transfer ground truth of training dataset and test dataset into one-hot coding with 10 classes
-train_labels = to_categorical( train_labels , num_classes = 10 )
+training_labels = to_categorical( training_labels , num_classes = 10 )
 test_labels = to_categorical( test_labels , num_classes = 10 )
 
 
-# Create a sequential neural network : 
+# Create a sequential Neural Network : 
 neural_network = keras.Sequential( [ 
     # input layer : 
     # 'Flatten' suggest that it is a layer which reshapes multi-dimensional inputs into one dimensional inputs.
@@ -52,12 +52,11 @@ neural_network = keras.Sequential( [
 
 
 # Training neural network :
-
 # creating a compiler with type of loss function , type of optimizer , and type of supervised metric.
 neural_network.compile( loss = 'mean_squared_error' , optimizer = SGD_optimizer , metrics = [ 'accuracy' ] )
 # creating a trainer with training datasets , test datasets , epoch , batch size , type of verbosity , shuffle mechanism
 neural_network_trainer = neural_network.fit( 
-                         train_images , train_labels ,
+                         training_images , training_labels ,
                          validation_data = ( test_images , test_labels ) , 
                          epochs = epoch , 
                          batch_size = batch_size ,

@@ -1,4 +1,4 @@
-# Call libraries :
+# Call Libraries :
 import numpy as np # numerical computing                        
 import tensorflow as tf # choose specifc DL framework                  
 keras = tf.keras  # using API in high abstraction level   
@@ -10,43 +10,96 @@ import logging  # control runtime log messages
 tf.get_logger().setLevel( logging.ERROR ) # suppress warning logs
 
 
-# Initializing (hyper)parameters : 
+# Initializing (Hyper)parameters : 
 epoch = 500 
 batch_size = 16
+model = Sequential() # initialize an empty sequential neural network.
 
-# Read and standardize the data.
-boston_housing = keras.datasets.boston_housing # 載入內建的波士頓房價資料集
-(raw_x_train, y_train), (raw_x_test, y_test) = boston_housing.load_data() # 拆分訓練集與測試集
 
-x_mean = np.mean(raw_x_train, axis=0) # 針對訓練集每個特徵計算平均值
-x_stddev = np.std(raw_x_train, axis=0) # 針對訓練集每個特徵計算標準差
-x_train = (raw_x_train - x_mean) / x_stddev # 對訓練集資料進行標準化
-x_test = (raw_x_test - x_mean) / x_stddev # 使用訓練集的平均與標準差對測試集進行標準化
+# Load and Prepare Training Dataset and Test Dataset :
+# load Boston Housing dataset  ( 404 training data and 102 test and 10000 test data which have 13 features per data ) 
+boston_housing = keras.datasets.boston_housing 
+( training_raw , training_labels ), ( test_raw , test_labels ) = boston_housing.load_data()
+#standarizing :
+# x_mean = np.mean( training_raw , axis = 0 ) :
+# axis = 0 : create an array containing the individual mean of each of the 13 features respectively , 404 x 1 values per feature.
+# this ensures each feature is standardized independently based on its own distribution,
+# preventing small-scale features from being dominated by large-scale features.
+# x_mean = np.mean( training_raw ) :
+# without axis : create a single scalar mean of all 13 features at once , 404 x 13 values.
+# because 13 features' scales and units vary drastically ,
+# the overall mean is dominated by large-magnitude features, making standardization statistically meaningless.
+raw_mean = np.mean( training_raw , axis = 0 ) 
+raw_stddev = np.std( training_raw , axis = 0 ) 
+training_raw = ( training_raw - raw_mean ) / raw_stddev
+test_raw = ( test_raw - raw_mean ) / raw_stddev 
 
-# Create and train model.
-model = Sequential() # 初始化空的序列模型
-model.add(Dense(64, activation='relu',  # 第一隱藏層：64 個神經元，ReLU 激勵函數，接收 13 個特徵輸入
-                kernel_regularizer=l2(0.1), # 對神經層權重 (kernel) 進行強度 0.1 的 L2 正規化[cite: 1]
-                bias_regularizer=l2(0), # 對偏置值 (bias) 進行強度 0.1 的 L2 正規化（註：一般常見做法不針對 bias 正規化，Keras 允許拆分設定）[cite: 1]
-                input_shape=[13])) # 設定 13 個特徵輸入[cite: 1]
-model.add(Dropout(0.2)) # 加入 Dropout 層，隨機關閉第一隱藏層中 20% 的神經元輸出[cite: 1]
-model.add(Dense(64, activation='relu', # 第二隱藏層：64 個神經元，ReLU 激勵函數
-                kernel_regularizer=l2(0.1), # 對第二隱藏層權重進行強度 0.1 的 L2 正規化[cite: 1]
-                bias_regularizer=l2(0))) # 對第二隱藏層偏置值進行強度 0.1 的 L2 正規化[cite: 1]
-model.add(Dropout(0.2)) # 加入 Dropout 層，隨機關閉第二隱藏層中 20% 的神經元輸出[cite: 1]
-model.add(Dense(1, activation='linear',  # 輸出層：1 個神經元，線性激勵函數（用於預測連續數值）
-                kernel_regularizer=l2(0.1), # 對輸出層權重進行強度 0.1 的 L2 正規化[cite: 1]
-                bias_regularizer=l2(0))) # 對輸出層偏置值進行強度 0.1 的 L2 正規化[cite: 1]
 
-model.compile(loss='mean_squared_error', optimizer='adam', metrics=['mean_absolute_error']) # 編譯模型：使用 MSE 損失函數、Adam 優化器，並印出 MAE 評估指標
-model.summary() # 印出模型架構摘要
+# Create a sequential Neural Network : 
+# input layer + first hidden layer : 
+# 'Dense' suggest that it's a fully connected layer.
+# creating the layer with num of neuron , type of activation funct , 
+# regularizer for input weights , regularizer for bias weights 
+model.add( Dense ( 64 , activation = 'relu' , 
+                   kernel_regularizer=l2( 1e-05 ) , # Lambda = 1 x 1e-05 in L2 Weight Decay.
+                   bias_regularizer=l2( 0 ) , # Lambda = 0 in L2 Weight Decay because bias weights are not regularized typically. 
+                   input_shape=[ 13 ] # input 13 features per data.
+                  )
+         ) 
+model.add( Dropout( 0.2 ) ) # add Dropout with dropout rate = 20% in the first hidden layer.
+# second hidden layer : 
+# 'Dense' suggest that it's a fully connected layer.
+# creating the layer with num of neuron , type of activation funct , 
+# regularizer for input weights , regularizer for bias weights 
+model.add( Dense ( 64 , activation = 'relu' , 
+                   kernel_regularizer=l2( 1e-05 ) , # Lambda = 1 x 1e-05 in L2 Weight Decay.
+                   bias_regularizer=l2( 0 ) # Lambda = 0 in L2 Weight Decay because bias weights are not regularized typically. 
+                  )
+         )
+# output layer : 
+# 'Dense' suggest that it's a fully connected layer.
+# creating the layer with num of neuron , type of activation funct , 
+# regularizer for input weights , regularizer for bias weights 
+model.add( Dropout ( 0.2 ) ) # add Dropout with dropout rate = 20% in the first hidden layer.
+model.add(Dense( 1 , activation = 'linear' , 
+                 kernel_regularizer=l2( 1e-05 ) , # Lambda = 1 x 1e-05 in L2 Weight Decay.
+                 bias_regularizer=l2( 0 ) # Lambda = 0 in L2 Weight Decay because bias weights are not regularized typically. 
+               )
+         )
+# model.summary() :
+# report network architecture regarding 
+# 1. topology in a given layer.
+# 2. output shapes in a given layer : ( batch size , output dimension ) 
+# 3. parameter counts (  total number of trainable weights and biases ) in a given layer : 
+# parameter counts = ( num of input weights per neuron * num of neurons ) + ( num of bias weights per neuron * num of neurons )
+# 4. total parameter counts
+# 5. total trainable parameter counts
+# 6. total non-trainable parameter counts
 
-history = model.fit(x_train, y_train, validation_data=(x_test, y_test), epochs=EPOCHS, batch_size=BATCH_SIZE, verbose=2, shuffle=True) # 開始訓練模型，並在測試集上進行驗證
+model.summary() 
 
-# Print first 4 predictions.
-predictions = model.predict(x_test) # 使用訓練好的模型對測試集進行預測[cite: 1]
-for i in range(0, 4): # 迴圈印出前 4 筆預測結果[cite: 1]
-    print('Prediction:', predictions[i], ', true value: ', y_test[i]) # 顯示預測值與實際目標值的差異[cite: 1]
+# Training neural network :
+# creating a compiler with type of loss function , type of optimizer , and type of supervised metric.
+model.compile( loss ='mean_squared_error', optimizer = 'adam', metrics = [ 'mean_absolute_error' ] ) 
+# creating a trainer with training datasets , test datasets , epoch , batch size , type of verbosity , shuffle mechanism
+model_trainer = model.fit( training_raw , training_labels , 
+                           validation_data=( test_raw , test_labels ) , 
+                           epochs = epoch , 
+                           batch_size = batch_size , 
+                           # creating a verbose mode for training progress output.
+                           # verbosity = 0 : Silent ( no log for training progress )
+                           # verbosity = 1 : Progress bar ( interactive logs for training progress each batch )
+                           # verbosity = 2 : One line per epoch (cleaner logs for training progress each epoch )
+                           verbose = 2 , 
+                           # creating a shuffle mechanism whether randomly permute the training data at the beginning of each epoch. 
+                           shuffle = True 
+                         )
+
+# Print Out Results :
+# evaluate the predicted output of the test dataset with the desired output of the test dataset ( ex : test_labels ) :
+predicted_output = model.predict( test_raw )
+for i in range( 0 , 4 ) :
+    print(' Predicted Output ' , i , ' : ', predicted_output[ i ] , 'vs. Ground Truth : ', test_labels[ i ] ) 
     
     
     
