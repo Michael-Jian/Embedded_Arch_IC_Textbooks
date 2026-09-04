@@ -36,3 +36,36 @@ history = model.fit(x_train, y_train, validation_data=(x_test, y_test), epochs=E
 predictions = model.predict(x_test) # 使用訓練好的模型對測試集進行預測[cite: 1]
 for i in range(0, 4): # 迴圈印出前 4 筆預測結果[cite: 1]
     print('Prediction:', predictions[i], ', true value: ', y_test[i]) # 顯示預測值與實際目標值的差異[cite: 1]
+    
+    
+    
+    
+    
+# -------------------------------------------------------------------------------------------------- 
+    # Code Snippet 6-2 How to Add L2 Regularization to the Model
+from keras.regularizers import l2 # 匯入 L2 正規化模組[cite: 1]
+
+model.add(Dense(64, activation='relu',
+                kernel_regularizer=l2(0.1), # 對神經層權重 (kernel) 進行強度 0.1 的 L2 正規化[cite: 1]
+                bias_regularizer=l2(0.1), # 對偏置值 (bias) 進行強度 0.1 的 L2 正規化（註：一般常見做法不針對 bias 正規化，Keras 允許拆分設定）[cite: 1]
+                input_shape=[13])) # 設定 13 個特徵輸入[cite: 1]
+model.add(Dense(64, activation='relu',
+                kernel_regularizer=l2(0.1), # 對第二隱藏層權重進行強度 0.1 的 L2 正規化[cite: 1]
+                bias_regularizer=l2(0.1))) # 對第二隱藏層偏置值進行強度 0.1 的 L2 正規化[cite: 1]
+model.add(Dense(1, activation='linear',
+                kernel_regularizer=l2(0.1), # 對輸出層權重進行強度 0.1 的 L2 正規化[cite: 1]
+                bias_regularizer=l2(0.1))) # 對輸出層偏置值進行強度 0.1 的 L2 正規化[cite: 1]
+
+# -------------------------------------------------------------------------------------------------- 
+
+# Code Snippet 6-3 How to Add Dropout to the Model
+from keras.layers import Dropout # 匯入 Dropout 層模組[cite: 1]
+
+
+model.add(Dense(64, activation='relu', input_shape=[ 13 ])) # 第一隱藏層[cite: 1]
+model.add(Dropout(0.2)) # 加入 Dropout 層，隨機關閉第一隱藏層中 20% 的神經元輸出[cite: 1]
+model.add(Dense(64, activation='relu')) # 第二隱藏層[cite: 1]
+model.add(Dropout(0.2)) # 加入 Dropout 層，隨機關閉第二隱藏層中 20% 的神經元輸出[cite: 1]
+model.add(Dense(1, activation='linear')) # 線性輸出層[cite: 1]
+
+# -------------------------------------------------------------------------------------------------- 
