@@ -1,7 +1,7 @@
 # Call libraries :
-import numpy as np # numerical computing                        
-import tensorflow as tf # chosing specifc DL framework                  
-keras = tf.keras  # using API in high abstraction level   
+import numpy as np # compute numerical values                             
+import tensorflow as tf # choose specifc DL framework                  
+keras = tf.keras  # use API in high abstraction level   
 
 
 # Initializing (hyper)parameters : 

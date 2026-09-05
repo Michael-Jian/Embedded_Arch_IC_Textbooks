@@ -1,7 +1,7 @@
 # Call Libraries :
-import numpy as np # numerical computing                        
+import numpy as np # compute numerical values                           
 import tensorflow as tf # choose specifc DL framework                  
-keras = tf.keras  # using API in high abstraction level   
+keras = tf.keras  # use API in high abstraction level   
 from keras import Sequential # use the Sequential Neural Network from keras
 from keras.layers import Dense # use the Dense layer from kersas
 from keras.regularizers import l2 # use L2 Regularization

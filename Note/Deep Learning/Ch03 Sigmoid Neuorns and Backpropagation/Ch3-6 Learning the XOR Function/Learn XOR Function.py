@@ -1,5 +1,5 @@
 # Call NumPy library :
-import numpy as np
+import numpy as np # compute numerical values 
 
 
 # Prepare pair training examples : 

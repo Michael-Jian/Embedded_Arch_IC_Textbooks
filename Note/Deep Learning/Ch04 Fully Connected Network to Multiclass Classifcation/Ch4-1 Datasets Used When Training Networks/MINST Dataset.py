@@ -1,6 +1,6 @@
 
-# 
-import idx2numpy
+# Call Libraries :
+import idx2numpy  # transfer specifc format file into NumPy NumPy format
 
 # Insert files path : 
 TRAINING_IMAGE_FILENAME = '/home/michael/Embedded_Arch_IC_Textbooks/Note/Deep Learning/Ch04 Fully Connected Network to Multiclass Classifcation/Ch4-1 Datasets Used When Training Networks/mnist dataset/train-images.idx3-ubyte'

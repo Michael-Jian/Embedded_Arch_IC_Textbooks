@@ -1,14 +1,14 @@
 # Call Libraries :
-import numpy as np # numerical computing                        
-import tensorflow as tf # chosing specifc DL framework                  
-keras = tf.keras  # using API in high abstraction level                           
+import numpy as np # compute numerical values                    
+import tensorflow as tf # choose specifc DL framework                  
+keras = tf.keras  # use API in high abstraction level                           
 to_categorical = tf.keras.utils.to_categorical # one-hot encoding target labels
-import logging  # controlling runtime log messages
-tf.get_logger().setLevel( logging.ERROR ) # suppressing warning logs
-tf.random.set_seed( 7 )     # initializing repeatable random sead
+import logging  # control runtime log messages
+tf.get_logger().setLevel( logging.ERROR ) # suppress warning logs
+tf.random.set_seed( 7 ) # initialize repeatable random sead
 
 
-# Initializing (Hyper)parameters  : 
+# Initializing (Hyper)parameters : 
 epoch = 20
 batch_size = 1 # updating weights with batch size = 1 is equal to updating weights per pair training example.
 # initializing weights with randomly uniform method wth specific range

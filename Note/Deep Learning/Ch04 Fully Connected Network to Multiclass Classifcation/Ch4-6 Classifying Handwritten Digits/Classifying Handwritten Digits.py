@@ -1,7 +1,7 @@
 # Call NumPy , matplotlib , idx2numpy libraries :  
 import numpy as np # for matrix multtplication.
 import matplotlib.pyplot as plt # for protraiting learning curve chart
-import idx2numpy # for MNIST dataset
+import idx2numpy  # transfer specifc format file into NumPy NumPy format
 
 
 # Insert files path : 
