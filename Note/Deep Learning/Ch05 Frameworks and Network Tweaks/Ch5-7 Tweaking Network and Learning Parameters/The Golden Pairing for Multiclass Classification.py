@@ -9,7 +9,7 @@ epoch = 14
 batch_size = 64
 
 # Load and Prepare training dataset and test dataset :
-# load MNIST dataset
+# load MNIST dataset ( 60000 training data and 10000 test data which have 28 x 28 features per data )
 mnist = keras.datasets.mnist
 ( train_images, train_labels ) , ( test_images , test_labels ) = mnist.load_data()
 

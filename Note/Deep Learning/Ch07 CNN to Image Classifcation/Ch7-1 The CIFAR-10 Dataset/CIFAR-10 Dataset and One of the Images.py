@@ -7,7 +7,8 @@ import logging  # control runtime log messages
 tf.get_logger().setLevel( logging.ERROR ) # suppress warning logs
 
 
-
+# Load and Prepare Training Dataset and Test Dataset :
+# load CIFAR dataset ( 50000 training data and 10000 test data which have 28 x 28 features per data )
 cifar_dataset = keras.datasets.cifar10 # 將 keras 內建的 CIFAR-10 資料集指定給變數
 
 # 載入資料，並解構分配給訓練集與測試集的影像和標籤變數

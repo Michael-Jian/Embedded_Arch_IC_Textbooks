@@ -18,7 +18,7 @@ SGD_optimizer = keras.optimizers.SGD( learning_rate = 0.01 )
 
 
 # Load and Prepare Training Dataset and Test Dataset :
-# load MNIST dataset ( 60000 training data and 10000 test data which have 784 features per data )
+# load MNIST dataset ( 60000 training data and 10000 test data which have 28 x 28 features per data )
 mnist = keras.datasets.mnist
 ( training_images, training_labels ) , ( test_images , test_labels ) = mnist.load_data()
 #standarizing :
