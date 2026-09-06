@@ -1,21 +1,25 @@
 # Call Libraries :
 import numpy as np # compute numerical values 
 import tensorflow as tf # choose specifc DL framework
-keras = tf.kersa  # use API in high abstraction level        
-import matplotlib.pyplot as plt  # for protraiting images
+keras = tf.keras  # use API in high abstraction level        
+import matplotlib.pyplot as plt  # for protraiting figures
 import logging  # control runtime log messages
 tf.get_logger().setLevel( logging.ERROR ) # suppress warning logs
 
 
 # Load and Prepare Training Dataset and Test Dataset :
-# load CIFAR dataset ( 50000 training data and 10000 test data which have 28 x 28 features per data )
-cifar_dataset = keras.datasets.cifar10 # 將 keras 內建的 CIFAR-10 資料集指定給變數
+# load CIFAR dataset ( 50000 training data and 10000 test data which have 32 x 32 x 3 features per data )
+cifar_dataset = keras.datasets.cifar10 
+( training_images , training_labels ), ( test_images , test_labels ) = cifar_dataset.load_data()
 
-# 載入資料，並解構分配給訓練集與測試集的影像和標籤變數
-(train_images, train_labels), (test_images, test_labels) = cifar_dataset.load_data()
 
-print('Category:', train_labels [100]) # 印出訓練集中第 100 號影像的分類標籤
+# Print Out Results :
+print( 'Training Label :' , 'category' , training_labels[ 100 ] ) 
+print( 'Training Image :' , "cifar_index_100.png" )
+plt.figure( figsize = ( 5 , 5 ) ) # create a figure with size of 5 x 5 ( inch^2 )
+plt.imshow( training_images [ 100 ] ) # insert the training image [ 100 ] into the figure
+# plt.show() # show the figure on the screen
+# save the  figure into .png format
+plt.savefig( 'cifar_index_100.png' ) 
 
-plt.figure(figsize=(1, 1)) # 創建一個大小為 1x1 吋的畫布
-plt.imshow(train_images [100]) # 繪製訓練集中第 100 號的影像內容
-plt.show() # 將繪製好的影像顯示在畫面上 
+    
