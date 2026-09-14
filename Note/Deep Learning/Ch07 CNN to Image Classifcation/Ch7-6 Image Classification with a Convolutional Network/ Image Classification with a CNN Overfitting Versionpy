@@ -31,7 +31,7 @@ print('stdandard dieviation : ' , stddev )
 
 # transfer lables into one hot code : 
 # to_categorical( the original data , clsses of the original data ) 
-train_labels = to_categorical( training_labels , num_classes = 10 )
+training_labels = to_categorical( training_labels , num_classes = 10 )
 test_labels = to_categorical( test_labels , num_classes = 10 ) 
 
 
@@ -44,7 +44,7 @@ test_labels = to_categorical( test_labels , num_classes = 10 )
 # creating the layer with regularizer for input weights , regularizer for bias weights 
 # creating the layer with data inputs
 model.add( Conv2D( 64, ( 5 , 5 ) , strides = ( 2 , 2 ) , activation = 'relu', padding = 'same' , 
-                   kernel_initializer='he_normal', bias_initializer='zeros' , 
+                   kernel_initializer='he_normal', bias_initializer = 'zeros' , 
                    input_shape=( 32 , 32 , 3 ) ) ) # input 32 x 32 x 3 features per data.
 
 # second hidden layer : 
@@ -92,7 +92,7 @@ model_trainer = model.fit( training_images , training_labels , validation_data =
                             # verbosity = 2 : One line per epoch (cleaner logs for training progress each epoch )
                             verbose = 2 , 
                             # creating a shuffle mechanism whether randomly permute the training data at the beginning of each epoch. 
-                            shuffle=True ) 
+                            shuffle = True ) 
 
 # Print Out Results :
 # model.evaluate( training datasets / test datasets ) :
