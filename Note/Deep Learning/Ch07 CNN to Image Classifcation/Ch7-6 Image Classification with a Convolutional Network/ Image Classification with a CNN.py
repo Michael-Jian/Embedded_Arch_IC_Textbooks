@@ -84,7 +84,7 @@ model.compile( loss = 'categorical_crossentropy', optimizer = 'adam', metrics = 
 # creating a trainer with epoch , batch size 
 # creating a trainer with type of verbosity 
 # creating a trainer with shuffle mechanism
-model_trainer = model.fit( training_images , training_labels , validation_data =( test_images , test_labels ) ,
+model_trainer = model.fit( training_images , training_labels , validation_data = ( test_images , test_labels ) ,
                             epochs = epoch , batch_size = batch_size , 
                             # creating a verbose mode for training progress output.
                             # verbosity = 0 : Silent ( no log for training progress )
@@ -92,8 +92,7 @@ model_trainer = model.fit( training_images , training_labels , validation_data =
                             # verbosity = 2 : One line per epoch (cleaner logs for training progress each epoch )
                             verbose = 2 , 
                             # creating a shuffle mechanism whether randomly permute the training data at the beginning of each epoch. 
-                            shuffle=True
-                            ) 
+                            shuffle=True ) 
 
 # Print Out Results :
 # model.evaluate( training datasets / test datasets ) :
