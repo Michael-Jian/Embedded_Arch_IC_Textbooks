@@ -39,33 +39,40 @@ test_raw = ( test_raw - raw_mean ) / raw_stddev
 # input layer + first hidden layer : 
 # 'Dense' suggest that it's a fully connected layer.
 # creating the layer with num of neuron , type of activation funct , 
-# regularizer for input weights , regularizer for bias weights 
+# creating the layer with regularizer for input weights 
+# creating the layer with regularizer for bias weights 
+# creating the layer with rdata inputs
 model.add( Dense ( 64 , activation = 'relu' , 
-                   kernel_regularizer=l2( 1e-05 ) , # Lambda = 1 x 1e-05 in L2 Weight Decay.
+                   kernel_regularizer=l2( 1e-05 ) , # Lambda = 1 x 10^-5 in L2 Weight Decay.
                    bias_regularizer=l2( 0 ) , # Lambda = 0 in L2 Weight Decay because bias weights are not regularized typically. 
                    input_shape=[ 13 ] # input 13 features per data.
                   )
          ) 
 model.add( Dropout( 0.2 ) ) # add Dropout with dropout rate = 20% in the first hidden layer.
+
 # second hidden layer : 
 # 'Dense' suggest that it's a fully connected layer.
 # creating the layer with num of neuron , type of activation funct , 
-# regularizer for input weights , regularizer for bias weights 
+# creating the layer with regularizer for input weights 
+# creating the layer with regularizer for bias weights 
 model.add( Dense ( 64 , activation = 'relu' , 
-                   kernel_regularizer=l2( 1e-05 ) , # Lambda = 1 x 1e-05 in L2 Weight Decay.
+                   kernel_regularizer=l2( 1e-05 ) , # Lambda = 1 x 10^-5 in L2 Weight Decay.
                    bias_regularizer=l2( 0 ) # Lambda = 0 in L2 Weight Decay because bias weights are not regularized typically. 
                   )
          )
+model.add( Dropout ( 0.2 ) ) # add Dropout with dropout rate = 20% in the second hidden layer.
+
 # output layer : 
 # 'Dense' suggest that it's a fully connected layer.
 # creating the layer with num of neuron , type of activation funct , 
-# regularizer for input weights , regularizer for bias weights 
-model.add( Dropout ( 0.2 ) ) # add Dropout with dropout rate = 20% in the first hidden layer.
-model.add(Dense( 1 , activation = 'linear' , 
-                 kernel_regularizer=l2( 1e-05 ) , # Lambda = 1 x 1e-05 in L2 Weight Decay.
+# creating the layer with regularizer for input weights 
+# creating the layer with regularizer for bias weights 
+model.add( Dense( 1 , activation = 'linear' , 
+                 kernel_regularizer=l2( 1e-05 ) , # Lambda = 1 x 10^-5 in L2 Weight Decay.
                  bias_regularizer=l2( 0 ) # Lambda = 0 in L2 Weight Decay because bias weights are not regularized typically. 
-               )
+                )
          )
+
 # model.summary() :
 # report network architecture regarding 
 # 1. topology in a given layer.
@@ -75,17 +82,17 @@ model.add(Dense( 1 , activation = 'linear' ,
 # 4. total parameter counts
 # 5. total trainable parameter counts
 # 6. total non-trainable parameter counts
-
 model.summary() 
 
 # Training neural network :
 # creating a compiler with type of loss function , type of optimizer , and type of supervised metric.
 model.compile( loss ='mean_squared_error', optimizer = 'adam', metrics = [ 'mean_absolute_error' ] ) 
-# creating a trainer with training datasets , test datasets , epoch , batch size , type of verbosity , shuffle mechanism
-model_trainer = model.fit( training_raw , training_labels , 
-                           validation_data=( test_raw , test_labels ) , 
-                           epochs = epoch , 
-                           batch_size = batch_size , 
+# creating a trainer with training datasets , test datasets 
+# creating a trainer with epoch , batch size 
+# creating a trainer with type of verbosity 
+# creating a trainer with shuffle mechanism
+model_trainer = model.fit( training_raw , training_labels , validation_data=( test_raw , test_labels ) , 
+                           epochs = epoch , batch_size = batch_size , 
                            # creating a verbose mode for training progress output.
                            # verbosity = 0 : Silent ( no log for training progress )
                            # verbosity = 1 : Progress bar ( interactive logs for training progress each batch )
