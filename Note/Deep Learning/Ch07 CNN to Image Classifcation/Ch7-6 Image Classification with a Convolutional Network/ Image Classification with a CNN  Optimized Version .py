@@ -18,6 +18,7 @@ epoch = 128
 batch_size = 32
 model = Sequential() # initialize an empty sequential neural network.
 
+
 # Load and Prepare Training Dataset and Test Dataset :
 # load CIFAR dataset ( 50000 training data and 10000 test data which have 32 x 32 x 3 features per data )
 cifar_dataset = keras.datasets.cifar10 
@@ -33,46 +34,92 @@ print('stdandard dieviation : ' , stddev )
 
 # transfer lables into one hot code : 
 # to_categorical( the original data , clsses of the original data ) 
-train_labels = to_categorical( training_labels , num_classes = 10 )
+training_labels = to_categorical( training_labels , num_classes = 10 )
 test_labels = to_categorical( test_labels , num_classes = 10 ) 
 
 
-
-# Model with two convolutional and one fully connected layer.
-
+# Create a sequential Neural Network :
+# input layer + first hidden layer : 
+# 'Conv2D' suggest that it's a convolutional layer.
+# padding = 'same' : padding function will count the number of extra values needed for padding and set the extra values as 0s  
+# creating the layer with num of neuron , kernel size , type of activation funct , type of padding mechanism 
+# creating the layer with data inputs
 model.add( Conv2D( 64 , ( 4 , 4 ) , activation = 'relu', padding = 'same', 
-                   input_shape=(32, 32, 3) ) ) 
-model.add( Dropout( 0.2 ) ) 
+                   input_shape = ( 32 , 32 , 3 ) ) ) 
+model.add( Dropout( 0.2 ) )  # add Dropout with dropout rate = 20% in the second hidden layer.
 
-model.add( Conv2D( 64 , ( 2 , 2 ) , activation = 'relu', padding = 'same', strides=(2,2))) # 增加第二層卷積，核大小 2x2，步幅加大為 2[cite: 1]
-model.add(Dropout(0.2)) # 加入 20% Dropout[cite: 1]
+# second hidden layer : 
+#'Conv2D' suggest that it's a convolutional layer.
+# padding = 'same' : padding function will count the number of extra values needed for padding and set the extra values as 0s  
+# creating the layer with num of neuron , kernel size , type of activation funct , type of padding mechanism , length of stride 
+model.add( Conv2D( 64 , ( 2 , 2 ) , activation = 'relu', padding = 'same', strides = ( 2 , 2 ) ) ) 
+model.add( Dropout( 0.2 ) )  # add Dropout with dropout rate = 20% in the second hidden layer.
 
-model.add(Conv2D(32, (3, 3), activation='relu', padding='same')) # 增加第三層卷積，通道數縮減為 32，核大小 3x3[cite: 1]
-model.add(Dropout(0.2)) # 加入 20% Dropout[cite: 1]
+# third hidden layer : 
+#'Conv2D' suggest that it's a convolutional layer.
+# padding = 'same' : padding function will count the number of extra values needed for padding and set the extra values as 0s  
+# creating the layer with num of neuron , kernel size , type of activation funct , type of padding mechanism
+model.add( Conv2D( 32 , ( 3 , 3 ) , activation = 'relu', padding = 'same' ) ) 
+model.add( Dropout( 0.2 ) )  # add Dropout with dropout rate = 20% in the second hidden layer. 
 
-model.add(Conv2D(32, (3, 3), activation='relu', padding='same')) # 增加第四層卷積，通道數維持 32，核大小 3x3[cite: 1]
-model.add(MaxPooling2D(pool_size=(2,2), strides=2)) # 加入最大池化層，將空間解析度減半[cite: 1]
-model.add(Dropout(0.2)) # 再次加入 20% Dropout[cite: 1]
+# fourth hidden layer : 
+#'Conv2D' suggest that it's a convolutional layer.
+# padding = 'same' : padding function will count the number of extra values needed for padding and set the extra values as 0s  
+# creating the layer with num of neuron , kernel size , type of activation funct , type of padding mechanism
+model.add( Conv2D( 32 , ( 3 , 3 ) , activation = 'relu', padding = 'same' ) )
+# use max pooling with max pool window in 2 x 2 and strides = 2 can cout down half of the original resolution.
+model.add( MaxPooling2D( pool_size = ( 2 , 2 ) , strides = 2 ) ) 
+model.add( Dropout( 0.2 ) )  # add Dropout with dropout rate = 20% in the second hidden layer. 
 
-model.add(Flatten()) # 將多維特徵圖展平為 1D 陣列[cite: 1]
+# fifth hidden layer : 
+# 'Flatten' suggest that it is a layer which reshapes multi-dimensional inputs into one dimensional inputs.
+model.add( Flatten() ) # reshape the outputs from the convolutional layer above for the usage of the following fully connected layer
 
-model.add(Dense(64, activation='relu')) # 增加隱藏的全連接層，配置 64 個神經元與 ReLU[cite: 1]
-model.add(Dropout(0.2)) # 加入 20% Dropout[cite: 1]
+# sixth hidden layer : 
+# 'Dense' suggest that it's a fully connected layer.
+# creating the layer with num of neuron , type of activation funct , 
+model.add( Dense( 64 , activation = 'relu' ) )
+model.add( Dropout( 0.2 ) )  # add Dropout with dropout rate = 20% in the second hidden layer. 
 
-model.add(Dense(64, activation='relu')) # 再增加一層配置 64 個神經元的全連接層[cite: 1]
-model.add(Dropout(0.2)) # 加入 20% Dropout[cite: 1]
+# seventh hidden layer : 
+# 'Dense' suggest that it's a fully connected layer.
+# creating the layer with num of neuron , type of activation funct , 
+model.add( Dense( 64 , activation = 'relu' ) )
+model.add( Dropout( 0.2 ) )  # add Dropout with dropout rate = 20% in the second hidden layer. 
 
-model.add(Dense(10, activation='softmax'))
+# output layer : 
+# 'Dense' suggest that it's a fully connected layer.
+# creating the layer with num of neuron , type of activation funct 
+model.add( Dense( 10 , activation = 'softmax' ) )
 
-model.compile(loss='categorical_crossentropy', # 編譯模型，設定損失函數為分類交叉熵[cite: 1]
-              optimizer='adam', metrics=['accuracy']) # 使用 Adam 最佳化演算法，並於訓練時監控準確率[cite: 1]
+# model.summary() :
+# report network architecture regarding 
+# 1. topology in a given layer.
+# 2. output shapes in a given layer : ( batch size , output dimension ) 
+# 3. parameter counts (  total number of trainable weights and biases ) in a given layer : 
+# parameter counts = ( num of input weights per neuron * num of neurons ) + ( num of bias weights per neuron * num of neurons )
+# 4. total parameter counts
+# 5. total trainable parameter counts
+# 6. total non-trainable parameter counts
+model.summary() 
 
-model.summary() # 輸出網路架構的摘要表與參數量統計[cite: 1]
 
-history = model.fit( # 啟動訓練過程並記錄訓練歷史[cite: 1]
-    training_images, train_labels, validation_data=(test_images, test_labels), # 輸入訓練資料與驗證資料[cite: 1]
-    epochs = epoch, batch_size = batch_size , verbose=2, shuffle=True) # 依照指定的 Epochs 數量與 Batch Size 進行打亂資料的訓練[cite: 1]
-
+# Training Neural Network :
+# creating a compiler with type of loss function , type of optimizer , and type of supervised metric.
+model.compile( loss = 'categorical_crossentropy', optimizer = 'adam', metrics = [ 'accuracy'] ) 
+# creating a trainer with training datasets , test datasets 
+# creating a trainer with epoch , batch size 
+# creating a trainer with type of verbosity 
+# creating a trainer with shuffle mechanism
+model_trainer = model.fit( training_images , training_labels , validation_data = ( test_images , test_labels ) ,
+                            epochs = epoch , batch_size = batch_size , 
+                            # creating a verbose mode for training progress output.
+                            # verbosity = 0 : Silent ( no log for training progress )
+                            # verbosity = 1 : Progress bar ( interactive logs for training progress each batch )
+                            # verbosity = 2 : One line per epoch (cleaner logs for training progress each epoch )
+                            verbose = 2 , 
+                            # creating a shuffle mechanism whether randomly permute the training data at the beginning of each epoch. 
+                            shuffle = True ) 
 
 
 # Print Out Results :

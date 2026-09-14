@@ -16,6 +16,7 @@ epoch = 128
 batch_size = 32
 model = Sequential() # initialize an empty sequential neural network.
 
+
 # Load and Prepare Training Dataset and Test Dataset :
 # load CIFAR dataset ( 50000 training data and 10000 test data which have 32 x 32 x 3 features per data )
 cifar_dataset = keras.datasets.cifar10 
@@ -33,7 +34,6 @@ print('stdandard dieviation : ' , stddev )
 # to_categorical( the original data , clsses of the original data ) 
 training_labels = to_categorical( training_labels , num_classes = 10 )
 test_labels = to_categorical( test_labels , num_classes = 10 ) 
-
 
 
 # Create a sequential Neural Network : 
