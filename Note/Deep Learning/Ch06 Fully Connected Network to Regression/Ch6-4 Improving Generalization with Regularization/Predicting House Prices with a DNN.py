@@ -1,11 +1,11 @@
 # Call Libraries :
 import numpy as np # compute numerical values                           
-import tensorflow as tf # choose specifc DL framework                  
-keras = tf.keras  # use API in high abstraction level   
-from keras import Sequential # use the Sequential Neural Network from keras
-from keras.layers import Dense # use the Dense layer from kersas
-from keras.regularizers import l2 # use L2 Regularization
-from keras.layers import Dropout # use Iverted Drpout
+import tensorflow as tf # choose the specifc DL framework                  
+keras = tf.keras  # use the API in high abstraction level   
+from keras.models import Sequential # use a Sequential Neural Network from keras
+from keras.layers import Dense # use a fully connected layer from keras
+from keras.regularizers import l2 # use a L2 Regularization
+from keras.layers import Dropout # use a Iverted Drpout from keras
 import logging  # control runtime log messages
 tf.get_logger().setLevel( logging.ERROR ) # suppress warning logs
 

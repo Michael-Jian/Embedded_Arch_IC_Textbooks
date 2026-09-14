@@ -1,16 +1,36 @@
-import tensorflow as tf # 匯入 TensorFlow 函式庫
-keras = tf.keras # 從 TensorFlow 匯入 keras 模組
-import numpy as np # 匯入 numpy 用於陣列運算
-import matplotlib.pyplot as plt # 匯入 matplotlib 用於繪圖與顯示影像[cite: 1]
-import logging # 匯入 logging 模組[cite: 1]
+# Call Libraries :
+import numpy as np # compute numerical values 
+import tensorflow as tf # choose the specifc DL framework
+keras = tf.keras  # use the API in high abstraction level   
+from keras.utils import to_categorical # use a one hot coding utensil
+from keras.models import Sequential # use a Sequential Neural Network from keras
+from keras.layers import Conv2D # use a convolutional layer from kersas
+from keras.layers import Flatten # use a 1D flat layer from kersas
+from keras.layers import Dense # use a fully connected layer from kersas
+import logging  # control runtime log messages
+tf.get_logger().setLevel( logging.ERROR ) # suppress warning logs
 
-tf.get_logger().setLevel(logging.ERROR) # 設定 TensorFlow 僅輸出錯誤層級的日誌[cite: 1]
 
-cifar_dataset = keras.datasets.cifar10 # 載入 Keras 內建的 CIFAR-10 資料集[cite: 1]
-(train_images, train_labels), (test_images, test_labels) = cifar_dataset.load_data() # 解包訓練集與測試集的影像與標籤[cite: 1]
+# Initializing (Hyper)parameters : 
+epoch = 128
+batch_size = 32
+model = Sequential() # initialize an empty sequential neural network.
 
-print('Category:', train_labels[100]) # 印出第 100 張訓練影像的類別陣列[cite: 1]
+# Load and Prepare Training Dataset and Test Dataset :
+# load CIFAR dataset ( 50000 training data and 10000 test data which have 32 x 32 x 3 features per data )
+cifar_dataset = keras.datasets.cifar10 
+( training_images , training_labels ), ( test_images , test_labels ) = cifar_dataset.load_data()
 
-plt.figure(figsize=(1, 1)) # 設定顯示圖片的視窗大小[cite: 1]
-plt.imshow(train_images[100]) # 將第 100 張訓練影像載入繪圖物件[cite: 1]
-plt.show() # 實際顯示該影像[cite: 1]
+# Standardize dataset.
+mean = np.mean(training_images) # 計算訓練影像所有像素的平均值[cite: 1]
+stddev = np.std(training_images) # 計算訓練影像所有像素的標準差[cite: 1]
+
+train_images = (training_images - mean) / stddev # 將訓練影像資料標準化[cite: 1]
+test_images = (test_images - mean) / stddev # 使用相同的平均值與標準差將測試影像資料標準化[cite: 1]
+
+print('mean:', mean) # 印出平均值供檢視[cite: 1]
+print('stddev:', stddev) # 印出標準差供檢視[cite: 1]
+
+# Change labels to one-hot.
+train_labels = to_categorical(training_labels, num_classes=10) # 將訓練標籤轉換為 10 類別的 One-hot 編碼向量[cite: 1]
+test_labels = to_categorical(test_labels, num_classes=10) # 將測試標籤轉換為 10 類別的 One-hot 編碼向量[cite: 1]
