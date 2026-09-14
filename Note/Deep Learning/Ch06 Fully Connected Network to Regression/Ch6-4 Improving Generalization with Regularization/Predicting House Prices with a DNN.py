@@ -4,8 +4,8 @@ import tensorflow as tf # choose the specifc DL framework
 keras = tf.keras  # use the API in high abstraction level   
 from keras.models import Sequential # use a Sequential Neural Network from keras
 from keras.layers import Dense # use a fully connected layer from keras
-from keras.regularizers import l2 # use a L2 Regularization
-from keras.layers import Dropout # use a Iverted Drpout from keras
+from keras.regularizers import l2 # use L2 Regularization
+from keras.layers import Dropout # use Iverted Drpout from keras
 import logging  # control runtime log messages
 tf.get_logger().setLevel( logging.ERROR ) # suppress warning logs
 
@@ -17,10 +17,10 @@ model = Sequential() # initialize an empty sequential neural network.
 
 
 # Load and Prepare Training Dataset and Test Dataset :
-# load Boston Housing dataset  ( 404 training data and 102 test and 10000 test data which have 13 features per data ) 
+# load Boston Housing dataset( 404 training data and 102 test and 10000 test data which have 13 features per data ) 
 boston_housing = keras.datasets.boston_housing 
 ( training_raw , training_labels ), ( test_raw , test_labels ) = boston_housing.load_data()
-#standarizing :
+# standarize datasets :
 # x_mean = np.mean( training_raw , axis = 0 ) :
 # axis = 0 : create an array containing the individual mean of each of the 13 features respectively , 404 x 1 values per feature.
 # this ensures each feature is standardized independently based on its own distribution,
