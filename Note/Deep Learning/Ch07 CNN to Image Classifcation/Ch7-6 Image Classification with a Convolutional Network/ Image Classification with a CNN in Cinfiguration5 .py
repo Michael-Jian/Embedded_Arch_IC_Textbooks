@@ -39,13 +39,12 @@ test_labels = to_categorical( test_labels , num_classes = 10 )
 
 
 # Model with two convolutional and one fully connected layer.
-model = Sequential() # 重新建立一個循序型模型 (Configuration 5)[cite: 1]
 
-model.add(Conv2D(64, (4, 4), activation='relu', padding='same', # 增加第一層卷積，核大小 4x4，步幅預設 1[cite: 1]
-                 input_shape=(32, 32, 3))) # 定義輸入影像尺寸[cite: 1]
-model.add(Dropout(0.2)) # 加入 20% Dropout 以抑制過擬合[cite: 1]
+model.add( Conv2D( 64 , ( 4 , 4 ) , activation = 'relu', padding = 'same', 
+                   input_shape=(32, 32, 3) ) ) 
+model.add( Dropout( 0.2 ) ) 
 
-model.add(Conv2D(64, (2, 2), activation='relu', padding='same', strides=(2,2))) # 增加第二層卷積，核大小 2x2，步幅加大為 2[cite: 1]
+model.add( Conv2D( 64 , ( 2 , 2 ) , activation = 'relu', padding = 'same', strides=(2,2))) # 增加第二層卷積，核大小 2x2，步幅加大為 2[cite: 1]
 model.add(Dropout(0.2)) # 加入 20% Dropout[cite: 1]
 
 model.add(Conv2D(32, (3, 3), activation='relu', padding='same')) # 增加第三層卷積，通道數縮減為 32，核大小 3x3[cite: 1]
@@ -73,3 +72,15 @@ model.summary() # 輸出網路架構的摘要表與參數量統計[cite: 1]
 history = model.fit( # 啟動訓練過程並記錄訓練歷史[cite: 1]
     training_images, train_labels, validation_data=(test_images, test_labels), # 輸入訓練資料與驗證資料[cite: 1]
     epochs = epoch, batch_size = batch_size , verbose=2, shuffle=True) # 依照指定的 Epochs 數量與 Batch Size 進行打亂資料的訓練[cite: 1]
+
+
+
+# Print Out Results :
+# model.evaluate( training datasets / test datasets ) :
+# the results of evaluation is despendable on the hyperparameters set on the model.compile().
+# for example , model.evaluate( training datasets / test datasets ) will outputs 'loss' we set and 'metrics' we set 
+# due to model.compile( loss , optimizer , metrics ) 
+training_loss , training_acc = model.evaluate( training_images , training_labels )
+test_loss , test_acc = model.evaluate( test_images , test_labels )
+print( f" Training Error : " ,  ( 1.0 - training_acc ) * 100 )
+print( f" Test Error : "  , ( 1.0 - test_acc ) * 100 )

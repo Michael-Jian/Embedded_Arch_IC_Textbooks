@@ -45,9 +45,7 @@ test_labels = to_categorical( test_labels , num_classes = 10 )
 # creating the layer with data inputs
 model.add( Conv2D( 64, ( 5 , 5 ) , strides = ( 2 , 2 ) , activation = 'relu', padding = 'same' , 
                    kernel_initializer='he_normal', bias_initializer='zeros' , 
-                   input_shape=( 32 , 32 , 3 ) ,  # input 32 x 32 x 3 features per data.
-                 )
-         ) 
+                   input_shape=( 32 , 32 , 3 ) ) ) # input 32 x 32 x 3 features per data.
 
 # second hidden layer : 
 # 'Conv2D' suggest that it's a convolutional layer.
@@ -55,9 +53,7 @@ model.add( Conv2D( 64, ( 5 , 5 ) , strides = ( 2 , 2 ) , activation = 'relu', pa
 # creating the layer with num of neuron , kernel size , length of stride , type of activation funct , type of padding mechanism
 # creating the layer with regularizer for input weights , regularizer for bias weights 
 model.add( Conv2D( 64 , ( 3 , 3 ) , strides = ( 2 , 2 ) , activation = 'relu' , padding = 'same', 
-                   kernel_initializer = 'he_normal' , bias_initializer = 'zeros' 
-                  )
-         ) 
+                   kernel_initializer = 'he_normal' , bias_initializer = 'zeros' ) )
 
 # third hidden layer : 
 # 'Flatten' suggest that it is a layer which reshapes multi-dimensional inputs into one dimensional inputs.
@@ -68,9 +64,7 @@ model.add( Flatten( ) ) # reshape the outputs from the convolutional layer above
 # creating the layer with num of neuron , type of activation funct , 
 # creating the layer with regularizer for input weights , regularizer for bias weights 
 model.add( Dense ( 10 , activation = 'softmax', 
-                   kernel_initializer = 'glorot_uniform' , bias_initializer = 'zeros'
-                 )
-         ) 
+                   kernel_initializer = 'glorot_uniform' , bias_initializer = 'zeros' ) )
 
 # model.summary() :
 # report network architecture regarding 
@@ -100,3 +94,13 @@ model_trainer = model.fit( training_images , training_labels , validation_data =
                             # creating a shuffle mechanism whether randomly permute the training data at the beginning of each epoch. 
                             shuffle=True
                             ) 
+
+# Print Out Results :
+# model.evaluate( training datasets / test datasets ) :
+# the results of evaluation is despendable on the hyperparameters set on the model.compile().
+# for example , model.evaluate( training datasets / test datasets ) will outputs 'loss' we set and 'metrics' we set 
+# due to model.compile( loss , optimizer , metrics ) 
+training_loss , training_acc = model.evaluate( training_images , training_labels )
+test_loss , test_acc = model.evaluate( test_images , test_labels )
+print( f" Training Error : " ,  ( 1.0 - training_acc ) * 100 )
+print( f" Test Error : "  , ( 1.0 - test_acc ) * 100 )
