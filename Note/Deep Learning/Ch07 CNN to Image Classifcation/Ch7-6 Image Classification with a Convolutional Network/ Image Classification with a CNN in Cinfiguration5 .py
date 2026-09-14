@@ -39,21 +39,31 @@ test_labels = to_categorical( test_labels , num_classes = 10 )
 
 
 # Model with two convolutional and one fully connected layer.
-model = Sequential() # 建立一個空的循序型神經網路模型[cite: 1]
+model = Sequential() # 重新建立一個循序型模型 (Configuration 5)[cite: 1]
 
-model.add(Conv2D(64, (5, 5), strides=(2,2), # 加入第一層 2D 卷積層，配置 64 個通道，卷積核大小為 5x5，步幅為 2x2[cite: 1]
-                 activation='relu', padding='same', # 使用 ReLU 激發函數，設定 padding='same' 使填補後能對齊邊界像素[cite: 1]
-                 input_shape=(32, 32, 3), # 宣告輸入影像的維度為 32x32 像素與 3 個顏色通道[cite: 1]
-                 kernel_initializer='he_normal', bias_initializer='zeros')) # 設定卷積核權重與偏差項的初始化方式[cite: 1]
+model.add(Conv2D(64, (4, 4), activation='relu', padding='same', # 增加第一層卷積，核大小 4x4，步幅預設 1[cite: 1]
+                 input_shape=(32, 32, 3))) # 定義輸入影像尺寸[cite: 1]
+model.add(Dropout(0.2)) # 加入 20% Dropout 以抑制過擬合[cite: 1]
 
-model.add(Conv2D(64, (3, 3), strides=(2,2), # 加入第二層 2D 卷積層，配置 64 個通道，卷積核縮小為 3x3，步幅為 2x2[cite: 1]
-                 activation='relu', padding='same', # 同樣使用 ReLU 激發函數與 'same' 邊界填補[cite: 1]
-                 kernel_initializer='he_normal', bias_initializer='zeros')) # 設定權重與偏差項初始化[cite: 1]
+model.add(Conv2D(64, (2, 2), activation='relu', padding='same', strides=(2,2))) # 增加第二層卷積，核大小 2x2，步幅加大為 2[cite: 1]
+model.add(Dropout(0.2)) # 加入 20% Dropout[cite: 1]
 
-model.add(Flatten()) # 加入展平層，將 3D 特徵圖轉換為 1D 向量以供後續全連接層使用[cite: 1]
+model.add(Conv2D(32, (3, 3), activation='relu', padding='same')) # 增加第三層卷積，通道數縮減為 32，核大小 3x3[cite: 1]
+model.add(Dropout(0.2)) # 加入 20% Dropout[cite: 1]
 
-model.add(Dense(10, activation='softmax', # 加入最終的全連接層，配置 10 個神經元對應 10 個類別，並使用 Softmax 輸出機率分佈[cite: 1]
-                kernel_initializer='glorot_uniform', bias_initializer='zeros')) # 設定權重與偏差項初始化[cite: 1]
+model.add(Conv2D(32, (3, 3), activation='relu', padding='same')) # 增加第四層卷積，通道數維持 32，核大小 3x3[cite: 1]
+model.add(MaxPooling2D(pool_size=(2,2), strides=2)) # 加入最大池化層，將空間解析度減半[cite: 1]
+model.add(Dropout(0.2)) # 再次加入 20% Dropout[cite: 1]
+
+model.add(Flatten()) # 將多維特徵圖展平為 1D 陣列[cite: 1]
+
+model.add(Dense(64, activation='relu')) # 增加隱藏的全連接層，配置 64 個神經元與 ReLU[cite: 1]
+model.add(Dropout(0.2)) # 加入 20% Dropout[cite: 1]
+
+model.add(Dense(64, activation='relu')) # 再增加一層配置 64 個神經元的全連接層[cite: 1]
+model.add(Dropout(0.2)) # 加入 20% Dropout[cite: 1]
+
+model.add(Dense(10, activation='softmax'))
 
 model.compile(loss='categorical_crossentropy', # 編譯模型，設定損失函數為分類交叉熵[cite: 1]
               optimizer='adam', metrics=['accuracy']) # 使用 Adam 最佳化演算法，並於訓練時監控準確率[cite: 1]

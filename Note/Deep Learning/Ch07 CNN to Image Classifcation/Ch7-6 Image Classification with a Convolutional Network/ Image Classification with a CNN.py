@@ -7,8 +7,6 @@ from keras.models import Sequential # use a Sequential Neural Network from keras
 from keras.layers import Conv2D # use a convolutional layer from kersas
 from keras.layers import Flatten # use a 1D flat layer from kersas
 from keras.layers import Dense # use a fully connected layer from kersas
-from keras.layers import Dropout # use Iverted Drpout from keras
-from keras.layers import MaxPooling2D # use Max Pooling from keras
 import logging  # control runtime log messages
 tf.get_logger().setLevel( logging.ERROR ) # suppress warning logs
 
