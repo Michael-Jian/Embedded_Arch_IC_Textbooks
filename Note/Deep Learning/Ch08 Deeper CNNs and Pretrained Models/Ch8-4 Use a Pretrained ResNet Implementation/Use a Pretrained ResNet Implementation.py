@@ -33,10 +33,15 @@ model = resnet50.ResNet50( weights = 'imagenet' ) # put the already adjusted wei
 preprocess_np_reshaped_image = resnet50.preprocess_input( np_reshaped_image.copy() )
 
 
-# Print Out Results :
+# Predict the Image : 
 p_y = model.predict( preprocess_np_reshaped_image ) # put the image into ResNet-50 and compute predicted outputs ( = p_y ) for each class
-decoded_p_y = decode_predictions( p_y ) #  # transfer predicted outputs ( = p_y ) into messages people can recognize.
-print (' prediction : ', decoded_p_y ) 
+
+
+# Print Out Results :
+decoded_p_y = decode_predictions( p_y ) #  # transfer predicted outputs ( = p_y ) into messages people can recognize (  = the top 5 possible results info )
+
+for rank , ( class_id , class_name , class_probability ) in enumerate( decoded_p_y[ 0 ] , start = 1 ) :
+    print( f"Top { rank } : { class_id } ( { class_name :<20} ) -> { class_probability * 100 :.2f}% " )
 # decoded_p_y[ 0 ] = the 1st bach of all decoded predicted o utputs.
 # plt.imshow( X ) : matplotlib's visualized function responsible for rendering a 2D or 3D pixel matrix as a color image onto the canvas.
 # plt.imshow( X )  operates under the following rules : 
