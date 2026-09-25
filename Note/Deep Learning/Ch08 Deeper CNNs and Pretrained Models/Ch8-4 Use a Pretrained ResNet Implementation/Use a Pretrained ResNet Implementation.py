@@ -13,7 +13,7 @@ tf.get_logger().setLevel( logging.ERROR ) # suppress warning logs
 
 # Load the Image and Convert Its Tensor : 
 # load "dog.jpg" and change the size of "dog.jpg" into 224 x 224 pixels to match the standard of ResNet50.
-image = load_img( '../Data/dog.jpg' , target_size = ( 224 , 224 ) ) 
+image = load_img( './Data/dog.jpg' , target_size = ( 224 , 224 ) ) 
 # tansfer the image of  224 x 224 pixels into NumPy Array 3D format , which is 224 x 224 x 3 ( = width x height x Cout )
 reshaped_image = img_to_array( image )
 # X = np.expand_dims( Y , axis = k ) : 'X' = add an extra dimension with value 1 to the index k of 'Y'.
